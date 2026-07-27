@@ -1,5 +1,5 @@
 import type { TextStyle } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, runOnJS } from 'react-native-reanimated';
 
 import { duration as durationTokens } from '@/constants/animation';
 
@@ -42,7 +42,8 @@ export function AnimatedText({
         entering={FadeIn.delay(delay)
           .duration(fadeDuration)
           .withCallback((finished) => {
-            if (finished && onRevealComplete) onRevealComplete();
+            'worklet';
+            if (finished && onRevealComplete) runOnJS(onRevealComplete)();
           })}
         exiting={FadeOut.duration(exitDuration)}
       >
@@ -64,7 +65,8 @@ export function AnimatedText({
             entering={FadeIn.delay(wordDelay)
               .duration(fadeDuration)
               .withCallback((finished) => {
-                if (finished && isLast && onRevealComplete) onRevealComplete();
+                'worklet';
+                if (finished && isLast && onRevealComplete) runOnJS(onRevealComplete)();
               })}
           >
             {word}
