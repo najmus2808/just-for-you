@@ -1894,3 +1894,66 @@ The final experience should feel like:
 Never make the language strategy feel random.
 
 Every sentence should have a reason to exist.
+
+---
+
+# 36. MEMORY VAULT — LOCAL PHOTO ARCHITECTURE
+
+## PRIVACY REQUIREMENT
+
+Personal photos are never provided during development and are never bundled
+into the APK or hardcoded into source code. No real personal photo is ever
+requested from the developer's device as part of building this app.
+
+Instead, personal photos are added **on the wife's own Android device, after
+installation**, directly from the Memory Vault. This is a deliberate privacy
+and architecture decision, not a placeholder-avoidance shortcut.
+
+## HOW PHOTOS GET INTO THE APP
+
+The only entry point for adding a personal photo is:
+
+> Memory Vault → "+" / Add Memory → Android system photo picker
+
+There is no separate Settings/Configuration screen for importing photos, and
+none should be added — this stays a single, discoverable, in-context flow.
+
+The Add Memory flow:
+
+1. Tap "+" in the Memory Vault.
+2. The Android system photo picker opens (not a custom gallery — the modern
+   Android photo picker, which needs no broad storage permission).
+3. Select one or more photos.
+4. Preview the selection; remove any before saving.
+5. Add title, date, optional location, and a personal story/caption.
+6. Save — this triggers a cinematic memory-reveal, and the memory appears in
+   the vault from then on.
+7. Memories can be edited or deleted later.
+
+Photo permission is requested only at step 2 — never at first launch, and
+never before the user has chosen to add a memory. The cinematic intro and the
+rest of first-launch is never interrupted by a permission prompt.
+
+## PERSISTENCE
+
+Image-picker URIs are not guaranteed to remain valid across app or device
+restarts, so selected photos are copied into the app's own local document
+storage (`expo-file-system`) at save time, and memory metadata (id, title,
+date, location, caption, the local file reference, created-at) is persisted
+locally (not in a bundled JSON file — user-added memories are runtime data).
+If the app is uninstalled, this local data is removed with it — that's
+expected and acceptable; nothing was ever meant to survive a reinstall.
+
+No backend, cloud storage, external API, or account is used at any point in
+this flow, consistent with Section 3.
+
+## STARTER / DEMO CONTENT
+
+The Memory Vault must feel complete and beautiful before any personal photo
+is ever added. `data/memories.ts` ships with tasteful placeholder/demo
+entries (using SafeImage's graceful placeholder presentation, not real
+photos) purely to demonstrate the experience — these are illustrative, not
+personal, content. The first-launch journey (Cinematic Intro → Our Story →
+Memories → Letters → Hidden Secrets → Interactive Experiences → Final
+Surprise) never asks the user to configure or import anything; adding real
+memories is optional and discovered later, entirely on her own terms.

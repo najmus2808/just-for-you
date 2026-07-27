@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Just For You",
+    "slug": "just-for-you",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "justforyou",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0B0A0D",
+    "android": {
+      "package": "com.forever.justforyou",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0A0D",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B0A0D",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 120
+        }
+      ],
+      "@react-native-community/datetimepicker"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
