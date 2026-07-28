@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
@@ -36,9 +37,19 @@ export function MusicPlayer({ song }: Props) {
   const status = useAudioPlayerStatus(player);
   const spin = useSharedValue(0);
 
-  spin.value = status.playing
-    ? withRepeat(withTiming(1, { duration: 6000, easing: Easing.linear }), -1, false)
-    : withTiming(spin.value, { duration: 0 });
+  // `status` updates continuously while playing (to drive the progress bar),
+  // which re-renders this component many times a second. Re-assigning
+  // withRepeat() on every one of those renders restarted the spin from
+  // scratch each time, so it stuttered instead of rotating smoothly — keying
+  // this off `status.playing` alone means it only (re)starts when playback
+  // actually toggles.
+  useEffect(() => {
+    if (status.playing) {
+      spin.value = withRepeat(withTiming(1, { duration: 6000, easing: Easing.linear }), -1, false);
+    } else {
+      spin.value = withTiming(spin.value, { duration: 0 });
+    }
+  }, [status.playing, spin]);
 
   const discStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${spin.value * 360}deg` }],
