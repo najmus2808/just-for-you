@@ -60,7 +60,11 @@ export default function Home() {
         <DailySurpriseCard />
 
         {memory ? (
-          <Pressable onPress={handleOpenMemory}>
+          <Pressable
+            onPress={handleOpenMemory}
+            accessibilityRole="button"
+            accessibilityLabel={`Today's memory: ${memory.title}`}
+          >
             <Card style={styles.memoryCard}>
               <Text style={styles.memoryLabel}>Today’s Memory</Text>
               <SafeImage

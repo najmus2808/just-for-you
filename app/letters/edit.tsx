@@ -23,8 +23,10 @@ export default function EditLetter() {
 
   useEffect(() => {
     if (prefilled || !letter) return;
-    setBody(letter.lines.join('\n\n'));
-    setPrefilled(true);
+    (async () => {
+      setBody(letter.lines.join('\n\n'));
+      setPrefilled(true);
+    })();
   }, [letter, prefilled]);
 
   if (!letter) {

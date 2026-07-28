@@ -88,7 +88,7 @@ export function MusicPlayer({ song }: Props) {
           </Text>
         </View>
       ) : (
-        <Text style={styles.notLoaded}>TODO — add this song’s audio file</Text>
+        <Text style={styles.notLoaded}>Audio coming soon</Text>
       )}
 
       <Text style={styles.reason}>{song.reason}</Text>

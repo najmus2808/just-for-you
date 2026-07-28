@@ -21,8 +21,10 @@ export default function EditQuiz() {
 
   useEffect(() => {
     if (prefilled) return;
-    setDraft(questions);
-    setPrefilled(true);
+    (async () => {
+      setDraft(questions);
+      setPrefilled(true);
+    })();
   }, [questions, prefilled]);
 
   const updateQuestionText = (id: string, text: string) => {

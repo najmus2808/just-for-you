@@ -43,6 +43,14 @@ export default function Memories() {
             </Text>
           </View>
         }
+        ListEmptyComponent={
+          loading ? null : (
+            <View style={styles.empty}>
+              <Ionicons name="images-outline" size={32} color={colors.textMuted} />
+              <Text style={styles.emptyText}>No memories yet — tap + to add your first one.</Text>
+            </View>
+          )
+        }
         renderItem={({ item, index }) => (
           <View style={styles.cell}>
             <MemoryCard
@@ -87,6 +95,18 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.sansRegular,
     fontSize: fontSize.sm,
     color: colors.textSecondary,
+  },
+  empty: {
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingTop: spacing.xxl,
+    paddingHorizontal: spacing.xl,
+  },
+  emptyText: {
+    fontFamily: fontFamily.sansRegular,
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    textAlign: 'center',
   },
   row: {
     gap: spacing.md,

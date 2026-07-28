@@ -42,7 +42,7 @@ export default function Anniversary() {
 
       {!countdown ? (
         <View style={styles.center}>
-          <Text style={styles.placeholder}>TODO — set the anniversary date in appConfig</Text>
+          <Text style={styles.placeholder}>Our anniversary date hasn&apos;t been set yet.</Text>
         </View>
       ) : countdown.isToday ? (
         <View style={styles.center}>
@@ -59,7 +59,7 @@ export default function Anniversary() {
             <SafeImage
               source={memories[slideIndex].photos?.[0]}
               style={styles.slidePhoto}
-              placeholderLabel="TODO — add photos to remember this by"
+              placeholderLabel="Add photos in Memories to see them here"
             />
           ) : null}
         </View>

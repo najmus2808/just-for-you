@@ -108,7 +108,13 @@ export default function Quiz() {
           const isCorrectOption = optionIndex === question.correctIndex;
           const showFeedback = selected !== null;
           return (
-            <Pressable key={option + optionIndex} onPress={() => handleSelect(optionIndex)}>
+            <Pressable
+              key={option + optionIndex}
+              onPress={() => handleSelect(optionIndex)}
+              disabled={selected !== null}
+              accessibilityRole="button"
+              accessibilityLabel={option}
+            >
               <Card
                 variant="glass"
                 style={[

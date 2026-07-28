@@ -65,7 +65,12 @@ export function LetterCard({ letter }: Props) {
   }));
 
   return (
-    <Pressable onPress={flipped ? handleOpen : handleFlip} style={styles.wrapper}>
+    <Pressable
+      onPress={flipped ? handleOpen : handleFlip}
+      style={styles.wrapper}
+      accessibilityRole="button"
+      accessibilityLabel={flipped ? `Open letter: ${letter.title}` : letter.title}
+    >
       <Animated.View style={[styles.face, frontStyle]}>
         <Ionicons name="heart-outline" size={22} color={colors.pinkAccent} />
         <Text style={styles.title}>{letter.title}</Text>

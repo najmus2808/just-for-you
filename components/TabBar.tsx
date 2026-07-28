@@ -89,7 +89,14 @@ function TabItem({
   }));
 
   return (
-    <Pressable style={styles.item} onPress={onPress} hitSlop={8}>
+    <Pressable
+      style={styles.item}
+      onPress={onPress}
+      hitSlop={8}
+      accessibilityRole="tab"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: focused }}
+    >
       <Animated.View style={[styles.itemInner, animatedStyle]}>
         {iconName ? (
           <Ionicons name={iconName} size={20} color={focused ? colors.gold : colors.textSecondary} />

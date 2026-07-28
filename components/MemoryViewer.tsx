@@ -7,6 +7,7 @@ import { colors } from '@/constants/colors';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import type { Memory, PhotoSource } from '@/types';
+import { formatShortDate } from '@/utils/dateUtils';
 
 type Props = {
   memory: Memory;
@@ -19,7 +20,6 @@ const PHOTO_SIZE = width - spacing.lg * 2;
 export function MemoryViewer({ memory }: Props) {
   const [stage, setStage] = useState(0);
   const photos: (PhotoSource | undefined)[] = memory.photos?.length ? memory.photos : [undefined];
-  const hasDate = !memory.date.startsWith('TODO_');
 
   return (
     <View style={styles.container}>
@@ -33,7 +33,7 @@ export function MemoryViewer({ memory }: Props) {
           <SafeImage
             source={item}
             style={styles.photo}
-            placeholderLabel={memory.isUserAdded ? undefined : 'TODO — add a photo'}
+            placeholderLabel={item ? undefined : 'No photo yet — tap ✏️ to add one'}
           />
         )}
       />
@@ -41,7 +41,7 @@ export function MemoryViewer({ memory }: Props) {
       <View style={styles.details}>
         <Text style={styles.title}>{memory.title}</Text>
         <Text style={styles.meta}>
-          {hasDate ? memory.date : 'Date coming soon'}
+          {formatShortDate(memory.date)}
           {memory.location ? ` · ${memory.location}` : ''}
         </Text>
 

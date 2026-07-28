@@ -6,6 +6,7 @@ import { radius, spacing } from '@/constants/spacing';
 import { shadows } from '@/constants/shadows';
 import { fontFamily, fontSize } from '@/constants/typography';
 import type { Memory } from '@/types';
+import { formatShortDate } from '@/utils/dateUtils';
 
 type Props = {
   memory: Memory;
@@ -15,11 +16,11 @@ type Props = {
 };
 
 export function MemoryCard({ memory, onPress, tilt = 'left' }: Props) {
-  const hasDate = !memory.date.startsWith('TODO_');
-
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`Open memory: ${memory.title}`}
       style={({ pressed }) => [
         styles.frame,
         tilt === 'left' ? styles.tiltLeft : styles.tiltRight,
@@ -29,17 +30,15 @@ export function MemoryCard({ memory, onPress, tilt = 'left' }: Props) {
       <SafeImage
         source={memory.photos?.[0]}
         style={styles.photo}
-        placeholderLabel={memory.isUserAdded ? undefined : 'TODO — add a photo'}
+        placeholderLabel={memory.photos?.length ? undefined : 'Add a photo'}
       />
       <View style={styles.caption}>
         <Text style={styles.title} numberOfLines={1}>
           {memory.title}
         </Text>
-        {hasDate ? (
-          <Text style={styles.date} numberOfLines={1}>
-            {memory.date}
-          </Text>
-        ) : null}
+        <Text style={styles.date} numberOfLines={1}>
+          {formatShortDate(memory.date)}
+        </Text>
       </View>
     </Pressable>
   );

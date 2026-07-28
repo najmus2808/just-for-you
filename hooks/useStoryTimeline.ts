@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type { TimelineEvent } from '@/types';
-import { formatDisplayDate, parseConfigDate } from '@/utils/dateUtils';
+import { parseConfigDate } from '@/utils/dateUtils';
 import {
   addStoryEvent,
   deleteStoryEvent,
@@ -80,7 +80,7 @@ export function useStoryTimeline() {
   const today: TimelineEvent = {
     id: 'story-today',
     title: 'Today',
-    date: formatDisplayDate(),
+    date: new Date().toISOString().slice(0, 10),
     description: 'আর গল্পটা এখনো চলছে...',
     hidePhotoSlot: true,
   };

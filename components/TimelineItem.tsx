@@ -10,6 +10,7 @@ import { colors } from '@/constants/colors';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import type { TimelineEvent } from '@/types';
+import { formatShortDate } from '@/utils/dateUtils';
 
 type Props = {
   event: TimelineEvent;
@@ -57,7 +58,6 @@ export function TimelineItem({
     transform: [{ scale: 0.4 + progress.value * 0.6 }],
   }));
 
-  const hasDate = !event.date.startsWith('TODO_');
   const canManage = event.isUserAdded && (onEdit || onDelete);
 
   return (
@@ -72,7 +72,7 @@ export function TimelineItem({
         <Pressable onPress={onToggle} disabled={!event.secretNote}>
           <Card style={styles.card}>
             <View style={styles.headerRow}>
-              <Text style={styles.date}>{hasDate ? event.date : 'Date coming soon'}</Text>
+              <Text style={styles.date}>{formatShortDate(event.date)}</Text>
               {canManage ? (
                 <View style={styles.actions}>
                   {onEdit ? (
@@ -103,7 +103,7 @@ export function TimelineItem({
               <SafeImage
                 source={event.photo}
                 style={styles.photo}
-                placeholderLabel="TODO — add a photo for this moment"
+                placeholderLabel="Add a photo for this moment"
               />
             )}
             <Text style={styles.description}>{event.description}</Text>

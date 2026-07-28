@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -75,8 +77,18 @@ export default function AddStoryEvent() {
     setPhotoRemoved(true);
   };
 
-  const canSave = title.trim().length > 0 && description.trim().length > 0 && !saving && prefilled;
+  const hasTitle = title.trim().length > 0;
+  const hasDescription = description.trim().length > 0;
+  const canSave = hasTitle && hasDescription && !saving && prefilled;
   const displayUri = pickedUri ?? existingUri;
+
+  const missingHint = !hasTitle && !hasDescription
+    ? 'Add a title and your story to save.'
+    : !hasTitle
+      ? 'Add a title to save.'
+      : !hasDescription
+        ? 'Add your story to save.'
+        : null;
 
   const handleSave = async () => {
     if (!canSave) return;
@@ -104,6 +116,11 @@ export default function AddStoryEvent() {
 
   return (
     <ScreenContainer gradient>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      >
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.headerRow}>
           <Pressable
@@ -155,7 +172,12 @@ export default function AddStoryEvent() {
         />
 
         <Text style={styles.label}>Date</Text>
-        <Pressable style={styles.input} onPress={() => setShowDatePicker(true)}>
+        <Pressable
+          style={styles.input}
+          onPress={() => setShowDatePicker(true)}
+          accessibilityRole="button"
+          accessibilityLabel={`Date: ${date.toDateString()}. Tap to change.`}
+        >
           <Text style={styles.inputText}>{date.toDateString()}</Text>
         </Pressable>
         {showDatePicker ? (
@@ -197,7 +219,9 @@ export default function AddStoryEvent() {
           disabled={!canSave}
           style={styles.saveButton}
         />
+        {missingHint ? <Text style={styles.hint}>{missingHint}</Text> : null}
       </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
@@ -305,5 +329,15 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginTop: spacing.xl,
+  },
+  hint: {
+    fontFamily: fontFamily.sansRegular,
+    fontSize: fontSize.xs,
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+  },
+  flex: {
+    flex: 1,
   },
 });

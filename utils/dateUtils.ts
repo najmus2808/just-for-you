@@ -20,6 +20,21 @@ export function formatDisplayDate(date: Date = new Date()): string {
   }).format(date);
 }
 
+/**
+ * A compact human date for cards ("12 August 2023") instead of a raw
+ * 'YYYY-MM-DD' string — falls back to a friendly note when the date is
+ * still a TODO_ placeholder or otherwise unparseable.
+ */
+export function formatShortDate(value: string): string {
+  const parsed = parseConfigDate(value);
+  if (!parsed) return 'Date coming soon';
+  return new Intl.DateTimeFormat('en-US', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(parsed);
+}
+
 export type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
 
 export function getTimeOfDay(date: Date = new Date()): TimeOfDay {

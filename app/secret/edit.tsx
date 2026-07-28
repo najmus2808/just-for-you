@@ -29,8 +29,10 @@ export default function EditSecretLetter() {
 
   useEffect(() => {
     if (prefilled) return;
-    setDraft(content);
-    setPrefilled(true);
+    (async () => {
+      setDraft(content);
+      setPrefilled(true);
+    })();
   }, [content, prefilled]);
 
   const handleSave = async () => {

@@ -20,8 +20,10 @@ export default function EditFinalMessage() {
 
   useEffect(() => {
     if (prefilled) return;
-    setBody(beats.join('\n'));
-    setPrefilled(true);
+    (async () => {
+      setBody(beats.join('\n'));
+      setPrefilled(true);
+    })();
   }, [beats, prefilled]);
 
   const handleSave = async () => {

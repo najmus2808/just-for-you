@@ -184,10 +184,7 @@ export function CinematicIntro({ onComplete }: Props) {
           />
         ) : (
           <View key={beat.id} style={styles.photoScene}>
-            <SafeImage
-              placeholderLabel="TODO_FIRST_PHOTO — add the photo that started it all"
-              style={styles.photo}
-            />
+            <SafeImage style={styles.photo} />
             <AnimatedText
               text={beat.caption}
               mode="fade"
