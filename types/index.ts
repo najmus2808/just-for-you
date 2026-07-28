@@ -33,6 +33,9 @@ export interface TimelineEvent {
   secretNote?: string;
   /** The live "Today" entry has no photo slot to fill in — hide it rather than showing a TODO placeholder. */
   hidePhotoSlot?: boolean;
+  /** Present on every event except the computed, non-editable "Today" entry. */
+  isUserAdded?: boolean;
+  createdAt?: string;
 }
 
 export interface Letter {
@@ -59,6 +62,15 @@ export interface Song {
   reason: string;
   /** A `require('../assets/audio/songs/...')` result. Undefined until the real file is added. */
   audioAsset?: number;
+}
+
+export interface SecretLetterContent {
+  discoveryLine: string;
+  opening: string;
+  body: string;
+  closingBangla: string;
+  closingEnglish: string;
+  final: string;
 }
 
 export interface Memory {

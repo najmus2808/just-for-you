@@ -1,15 +1,13 @@
 import type { TimelineEvent } from '@/types';
-import { formatDisplayDate } from '@/utils/dateUtils';
 
 /**
- * The relationship timeline (SPEC.md Section 12) — shaped for an arranged
- * marriage: one family-arranged meeting, then the wedding, then getting to
- * know each other for real. Filled with DEMO dates/descriptions so the app
- * feels complete end-to-end — swap in the real dates and descriptions
- * whenever ready; nothing else needs to change. The trailing "Today" entry
- * is computed live, not stored here.
+ * Starter/demo entries for the relationship timeline (SPEC.md Section 12) —
+ * shaped for an arranged marriage: one family-arranged meeting, then the
+ * wedding, then getting to know each other for real. These seed into the
+ * same editable store as any event added on-device (utils/storyStorage.ts),
+ * so everything here is just a starting point, not a fixed script.
  */
-const STORY_EVENTS: TimelineEvent[] = [
+export const STARTER_STORY_EVENTS: TimelineEvent[] = [
   {
     id: 'story-met',
     title: 'The Day We Met',
@@ -37,14 +35,3 @@ const STORY_EVENTS: TimelineEvent[] = [
     description: 'কক্সবাজারের সমুদ্রের সামনে দাঁড়িয়ে বুঝেছিলাম, ঘুরতে যাওয়া মানেই শুধু জায়গা না, তোমার পাশে থাকাটাই আসল।',
   },
 ];
-
-export function getStoryTimeline(): TimelineEvent[] {
-  const today: TimelineEvent = {
-    id: 'story-today',
-    title: 'Today',
-    date: formatDisplayDate(),
-    description: 'আর গল্পটা এখনো চলছে...',
-    hidePhotoSlot: true,
-  };
-  return [...STORY_EVENTS, today];
-}

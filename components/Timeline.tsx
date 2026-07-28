@@ -9,12 +9,14 @@ import type { TimelineEvent } from '@/types';
 
 type Props = {
   events: TimelineEvent[];
+  onEditEvent?: (id: string) => void;
+  onDeleteEvent?: (id: string) => void;
 };
 
 const VIEWABILITY_CONFIG = { itemVisiblePercentThreshold: 30 };
 
 /** Scroll-revealed relationship timeline (SPEC.md Section 12). */
-export function Timeline({ events }: Props) {
+export function Timeline({ events, onEditEvent, onDeleteEvent }: Props) {
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -45,9 +47,11 @@ export function Timeline({ events }: Props) {
         isLast={index === events.length - 1}
         expanded={expandedId === item.id}
         onToggle={() => setExpandedId((current) => (current === item.id ? null : item.id))}
+        onEdit={onEditEvent ? () => onEditEvent(item.id) : undefined}
+        onDelete={onDeleteEvent ? () => onDeleteEvent(item.id) : undefined}
       />
     ),
-    [revealedIds, expandedId, events.length],
+    [revealedIds, expandedId, events.length, onEditEvent, onDeleteEvent],
   );
 
   return (

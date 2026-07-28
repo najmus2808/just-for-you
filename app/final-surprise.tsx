@@ -14,7 +14,11 @@ export default function FinalSurpriseScreen() {
 
   return (
     <>
-      <FinalSurprise key={playKey} onReplay={() => setPlayKey((k) => k + 1)} />
+      <FinalSurprise
+        key={playKey}
+        onReplay={() => setPlayKey((k) => k + 1)}
+        onEdit={() => router.push('/final-surprise/edit')}
+      />
       <Pressable
         style={[styles.close, { top: insets.top + spacing.sm }]}
         onPress={() => router.back()}

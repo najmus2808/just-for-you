@@ -5,14 +5,16 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { colors } from '@/constants/colors';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
-import { LETTERS } from '@/data/letters';
+import { useLetters } from '@/hooks/useLetters';
 
 /** The "Open When..." experience (SPEC.md Section 14). */
 export default function Letters() {
+  const { letters } = useLetters();
+
   return (
     <ScreenContainer>
       <FlatList
-        data={LETTERS}
+        data={letters}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}

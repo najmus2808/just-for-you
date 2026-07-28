@@ -11,12 +11,13 @@ import { SecretReveal } from '@/components/SecretReveal';
 import { colors } from '@/constants/colors';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
-import { SECRET_LETTER } from '@/data/secret';
+import { useSecretLetter } from '@/hooks/useSecretLetter';
 import { checkSecretUnlock } from '@/utils/secretUnlock';
 
 type Stage = 'discovery' | 'unlock' | 'revealed';
 
 export default function Secret() {
+  const { content } = useSecretLetter();
   const [stage, setStage] = useState<Stage>('discovery');
   const [input, setInput] = useState('');
   const [wrongAttempt, setWrongAttempt] = useState(false);
@@ -45,7 +46,7 @@ export default function Secret() {
   }));
 
   if (stage === 'revealed') {
-    return <SecretReveal />;
+    return <SecretReveal onEdit={() => router.push('/secret/edit')} />;
   }
 
   return (
@@ -58,7 +59,7 @@ export default function Secret() {
         <View style={styles.center}>
           <AnimatedText
             key="discovery"
-            text={SECRET_LETTER.discoveryLine}
+            text={content.discoveryLine}
             mode="fade"
             onRevealComplete={goToUnlock}
             style={styles.discoveryText}

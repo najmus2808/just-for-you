@@ -21,7 +21,3 @@ export async function setItem<T>(key: string, value: T): Promise<void> {
     // Non-fatal: the moment just won't be remembered next launch.
   }
 }
-
-export const STORAGE_KEYS = {
-  hasSeenIntro: 'jfy:hasSeenIntro',
-} as const;

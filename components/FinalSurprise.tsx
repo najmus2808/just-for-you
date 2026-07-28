@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
@@ -9,7 +9,7 @@ import { FloatingParticles } from '@/components/FloatingParticles';
 import { colors } from '@/constants/colors';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
-import { FINAL_MESSAGE_BEATS } from '@/data/finalMessage';
+import { useFinalMessage } from '@/hooks/useFinalMessage';
 
 type Beat = {
   text: string;
@@ -21,36 +21,41 @@ type Beat = {
 
 const isBangla = (text: string) => /[ঀ-৿]/.test(text);
 
-const BEATS: Beat[] = FINAL_MESSAGE_BEATS.map((text, index) => {
-  const isLast = index === FINAL_MESSAGE_BEATS.length - 1;
-  const isPenultimate = index === FINAL_MESSAGE_BEATS.length - 2;
-  const bangla = isBangla(text);
+function buildBeats(lines: string[]): Beat[] {
+  return lines.map((text, index) => {
+    const isLast = index === lines.length - 1;
+    const isPenultimate = index === lines.length - 2;
+    const bangla = isBangla(text);
 
-  if (isLast || isPenultimate) {
+    if (isLast || isPenultimate) {
+      return {
+        text,
+        fontFamily: bangla ? fontFamily.banglaSerifSemiBold : fontFamily.script,
+        fontSize: bangla ? fontSize.xxl : fontSize.display,
+        color: colors.gold,
+        hold: 2600,
+      };
+    }
+
     return {
       text,
-      fontFamily: bangla ? fontFamily.banglaSerifSemiBold : fontFamily.script,
-      fontSize: bangla ? fontSize.xxl : fontSize.display,
-      color: colors.gold,
-      hold: 2600,
+      fontFamily: bangla ? fontFamily.banglaSerifMedium : fontFamily.sansRegular,
+      fontSize: fontSize.lg,
+      color: colors.cream,
+      hold: 2000,
     };
-  }
-
-  return {
-    text,
-    fontFamily: bangla ? fontFamily.banglaSerifMedium : fontFamily.sansRegular,
-    fontSize: bangla ? fontSize.lg : fontSize.lg,
-    color: colors.cream,
-    hold: 2000,
-  };
-});
+  });
+}
 
 type Props = {
   onReplay: () => void;
+  onEdit: () => void;
 };
 
 /** The emotional climax of the app (SPEC.md Section 22). */
-export function FinalSurprise({ onReplay }: Props) {
+export function FinalSurprise({ onReplay, onEdit }: Props) {
+  const { beats: lines } = useFinalMessage();
+  const beats = useMemo(() => buildBeats(lines), [lines]);
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -67,13 +72,13 @@ export function FinalSurprise({ onReplay }: Props) {
     clearTimer();
     setIndex((current) => {
       const next = current + 1;
-      if (next >= BEATS.length) {
+      if (next >= beats.length) {
         setDone(true);
         return current;
       }
       return next;
     });
-  }, []);
+  }, [beats.length]);
 
   useEffect(() => () => clearTimer(), []);
 
@@ -84,7 +89,7 @@ export function FinalSurprise({ onReplay }: Props) {
     }
   }, [done, pulse]);
 
-  const beat = BEATS[index];
+  const beat = beats[index];
 
   const handleRevealComplete = useCallback(() => {
     clearTimer();
@@ -117,14 +122,19 @@ export function FinalSurprise({ onReplay }: Props) {
           />
         ) : null}
 
-        {done ? (
+        {done && beats.length > 0 ? (
           <View style={styles.doneBlock}>
             <Animated.Text style={[styles.doneText, glowStyle]}>
-              {BEATS[BEATS.length - 1].text}
+              {beats[beats.length - 1].text}
             </Animated.Text>
-            <Pressable onPress={onReplay} style={styles.replay} hitSlop={12}>
-              <AnimatedText key="replay" text="Replay" mode="fade" delay={800} style={styles.replayText} />
-            </Pressable>
+            <View style={styles.linkRow}>
+              <Pressable onPress={onReplay} hitSlop={12}>
+                <Text style={styles.linkText}>Replay</Text>
+              </Pressable>
+              <Pressable onPress={onEdit} hitSlop={12}>
+                <Text style={styles.linkText}>Edit</Text>
+              </Pressable>
+            </View>
           </View>
         ) : null}
       </View>
@@ -154,10 +164,12 @@ const styles = StyleSheet.create({
     color: colors.gold,
     textAlign: 'center',
   },
-  replay: {
+  linkRow: {
+    flexDirection: 'row',
+    gap: spacing.xl,
     marginTop: spacing.md,
   },
-  replayText: {
+  linkText: {
     fontFamily: fontFamily.sansMedium,
     fontSize: fontSize.sm,
     color: colors.textMuted,

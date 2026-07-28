@@ -11,7 +11,7 @@ import { ScreenContainer } from '@/components/ScreenContainer';
 import { colors } from '@/constants/colors';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
-import { QUIZ_QUESTIONS } from '@/data/quiz';
+import { useQuizQuestions } from '@/hooks/useQuizQuestions';
 
 function resultMessage(score: number, total: number): string {
   const ratio = score / total;
@@ -21,13 +21,14 @@ function resultMessage(score: number, total: number): string {
 }
 
 export default function Quiz() {
+  const { questions } = useQuizQuestions();
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
 
-  const question = QUIZ_QUESTIONS[index];
-  const isLast = index === QUIZ_QUESTIONS.length - 1;
+  const question = questions[index];
+  const isLast = index === questions.length - 1;
 
   const handleSelect = (optionIndex: number) => {
     if (selected !== null) return;
@@ -58,10 +59,10 @@ export default function Quiz() {
   if (finished) {
     return (
       <ScreenContainer gradient style={styles.center}>
-        <Text style={styles.resultTitle}>You scored {score}/{QUIZ_QUESTIONS.length}</Text>
+        <Text style={styles.resultTitle}>You scored {score}/{questions.length}</Text>
         <AnimatedText
           key="result"
-          text={resultMessage(score, QUIZ_QUESTIONS.length)}
+          text={resultMessage(score, questions.length)}
           mode="fade"
           style={styles.resultMessage}
         />
@@ -71,8 +72,21 @@ export default function Quiz() {
     );
   }
 
+  if (!question) {
+    return null;
+  }
+
   return (
     <ScreenContainer gradient style={styles.container}>
+      <Pressable
+        style={styles.editButton}
+        onPress={() => router.push('/quiz/edit')}
+        hitSlop={12}
+        accessibilityRole="button"
+        accessibilityLabel="Edit quiz questions"
+      >
+        <Ionicons name="pencil-outline" size={20} color={colors.textSecondary} />
+      </Pressable>
       <Pressable
         style={styles.close}
         onPress={() => router.back()}
@@ -84,7 +98,7 @@ export default function Quiz() {
       </Pressable>
 
       <Text style={styles.progress}>
-        Question {index + 1} of {QUIZ_QUESTIONS.length}
+        Question {index + 1} of {questions.length}
       </Text>
       <Text style={styles.question}>{question.question}</Text>
 
@@ -139,6 +153,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: spacing.xl,
     right: spacing.lg,
+    zIndex: 1,
+  },
+  editButton: {
+    position: 'absolute',
+    top: spacing.xl,
+    left: spacing.lg,
     zIndex: 1,
   },
   progress: {

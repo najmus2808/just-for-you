@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -17,9 +18,20 @@ type Props = {
   isLast: boolean;
   expanded: boolean;
   onToggle: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
-export function TimelineItem({ event, revealed, isFirst, isLast, expanded, onToggle }: Props) {
+export function TimelineItem({
+  event,
+  revealed,
+  isFirst,
+  isLast,
+  expanded,
+  onToggle,
+  onEdit,
+  onDelete,
+}: Props) {
   const progress = useSharedValue(0);
 
   useEffect(() => {
@@ -46,6 +58,7 @@ export function TimelineItem({ event, revealed, isFirst, isLast, expanded, onTog
   }));
 
   const hasDate = !event.date.startsWith('TODO_');
+  const canManage = event.isUserAdded && (onEdit || onDelete);
 
   return (
     <View style={styles.row}>
@@ -58,7 +71,33 @@ export function TimelineItem({ event, revealed, isFirst, isLast, expanded, onTog
       <Animated.View style={[styles.cardWrapper, cardStyle]}>
         <Pressable onPress={onToggle} disabled={!event.secretNote}>
           <Card style={styles.card}>
-            <Text style={styles.date}>{hasDate ? event.date : 'Date coming soon'}</Text>
+            <View style={styles.headerRow}>
+              <Text style={styles.date}>{hasDate ? event.date : 'Date coming soon'}</Text>
+              {canManage ? (
+                <View style={styles.actions}>
+                  {onEdit ? (
+                    <Pressable
+                      onPress={onEdit}
+                      hitSlop={10}
+                      accessibilityRole="button"
+                      accessibilityLabel="Edit this moment"
+                    >
+                      <Ionicons name="pencil-outline" size={16} color={colors.textMuted} />
+                    </Pressable>
+                  ) : null}
+                  {onDelete ? (
+                    <Pressable
+                      onPress={onDelete}
+                      hitSlop={10}
+                      accessibilityRole="button"
+                      accessibilityLabel="Delete this moment"
+                    >
+                      <Ionicons name="trash-outline" size={16} color={colors.textMuted} />
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+            </View>
             <Text style={styles.title}>{event.title}</Text>
             {event.hidePhotoSlot ? null : (
               <SafeImage
@@ -111,6 +150,15 @@ const styles = StyleSheet.create({
     paddingLeft: spacing.sm,
   },
   card: {
+    gap: spacing.sm,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  actions: {
+    flexDirection: 'row',
     gap: spacing.sm,
   },
   date: {

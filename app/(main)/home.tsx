@@ -1,15 +1,10 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
 
 import { AmbientGlow } from '@/components/AmbientGlow';
-import { AnimatedText } from '@/components/AnimatedText';
 import { Card } from '@/components/Card';
 import { DailySurpriseCard } from '@/components/DailySurpriseCard';
 import { SafeImage } from '@/components/SafeImage';
@@ -23,19 +18,15 @@ import { formatDisplayDate, getGreeting } from '@/utils/dateUtils';
 
 /** The entrance to a private world, not a dashboard (SPEC.md Section 10). */
 export default function Home() {
-  const [expanded, setExpanded] = useState(false);
   const { memories } = useMemories();
   const memory = memories[0] ?? null;
   const dateTapCount = useRef(0);
   const dateTapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const chevronStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: withTiming(expanded ? '180deg' : '0deg', { duration: 250 }) }],
-  }));
-
-  const handleToggle = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    setExpanded((current) => !current);
+  const handleOpenMemory = () => {
+    if (!memory) return;
+    Haptics.selectionAsync().catch(() => {});
+    router.push({ pathname: '/memories/[id]', params: { id: memory.id } });
   };
 
   // A quiet nod to "tap the date multiple times" (SPEC.md Section 21) — five
@@ -69,28 +60,18 @@ export default function Home() {
         <DailySurpriseCard />
 
         {memory ? (
-          <Pressable onPress={handleToggle}>
+          <Pressable onPress={handleOpenMemory}>
             <Card style={styles.memoryCard}>
               <Text style={styles.memoryLabel}>Today’s Memory</Text>
               <SafeImage
                 style={styles.memoryPhoto}
                 source={memory.photos?.[0]}
-                placeholderLabel="TODO — add this memory's photo"
+                placeholderLabel="Tap to add this memory's photo"
               />
               <View style={styles.memoryPromptRow}>
                 <Text style={styles.memoryPrompt}>Do you remember this day?</Text>
-                <Animated.View style={chevronStyle}>
-                  <Ionicons name="chevron-down" size={18} color={colors.gold} />
-                </Animated.View>
+                <Ionicons name="chevron-forward" size={18} color={colors.gold} />
               </View>
-              {expanded ? (
-                <AnimatedText
-                  key={`${memory.id}-caption`}
-                  text={memory.caption}
-                  mode="fade"
-                  style={styles.memoryCaption}
-                />
-              ) : null}
             </Card>
           </Pressable>
         ) : null}
@@ -149,11 +130,5 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.serifSemiBold,
     fontSize: fontSize.md,
     color: colors.cream,
-  },
-  memoryCaption: {
-    fontFamily: fontFamily.banglaRegular,
-    fontSize: fontSize.md,
-    lineHeight: fontSize.md * 1.6,
-    color: colors.textSecondary,
   },
 });

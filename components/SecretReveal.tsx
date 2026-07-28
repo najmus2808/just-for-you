@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
@@ -8,43 +8,51 @@ import { AnimatedText } from '@/components/AnimatedText';
 import { colors } from '@/constants/colors';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
-import { SECRET_LETTER } from '@/data/secret';
+import { useSecretLetter } from '@/hooks/useSecretLetter';
 
 type Beat = { id: string; text: string; style: object; hold: number };
 
-const BEATS: Beat[] = [
-  {
-    id: 'opening',
-    text: SECRET_LETTER.opening,
-    style: { fontFamily: fontFamily.banglaSerifMedium, fontSize: fontSize.lg, color: colors.cream },
-    hold: 2200,
-  },
-  {
-    id: 'body',
-    text: SECRET_LETTER.body,
-    style: { fontFamily: fontFamily.banglaRegular, fontSize: fontSize.md, color: colors.textSecondary },
-    hold: 2600,
-  },
-  {
-    id: 'closing-bn',
-    text: SECRET_LETTER.closingBangla,
-    style: { fontFamily: fontFamily.banglaSerifMedium, fontSize: fontSize.lg, color: colors.pinkAccent },
-    hold: 2600,
-  },
-  {
-    id: 'closing-en',
-    text: SECRET_LETTER.closingEnglish,
-    style: { fontFamily: fontFamily.serifSemiBold, fontSize: fontSize.xl, color: colors.cream },
-    hold: 2000,
-  },
-];
+type Props = {
+  onEdit: () => void;
+};
 
 /** Post-unlock reveal of the Secret Letter (SPEC.md Section 15). */
-export function SecretReveal() {
+export function SecretReveal({ onEdit }: Props) {
+  const { content } = useSecretLetter();
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pulse = useSharedValue(0);
+
+  const beats = useMemo<Beat[]>(
+    () => [
+      {
+        id: 'opening',
+        text: content.opening,
+        style: { fontFamily: fontFamily.banglaSerifMedium, fontSize: fontSize.lg, color: colors.cream },
+        hold: 2200,
+      },
+      {
+        id: 'body',
+        text: content.body,
+        style: { fontFamily: fontFamily.banglaRegular, fontSize: fontSize.md, color: colors.textSecondary },
+        hold: 2600,
+      },
+      {
+        id: 'closing-bn',
+        text: content.closingBangla,
+        style: { fontFamily: fontFamily.banglaSerifMedium, fontSize: fontSize.lg, color: colors.pinkAccent },
+        hold: 2600,
+      },
+      {
+        id: 'closing-en',
+        text: content.closingEnglish,
+        style: { fontFamily: fontFamily.serifSemiBold, fontSize: fontSize.xl, color: colors.cream },
+        hold: 2000,
+      },
+    ],
+    [content],
+  );
 
   const clearTimer = () => {
     if (timerRef.current) {
@@ -57,13 +65,13 @@ export function SecretReveal() {
     clearTimer();
     setIndex((current) => {
       const next = current + 1;
-      if (next >= BEATS.length) {
+      if (next >= beats.length) {
         setDone(true);
         return current;
       }
       return next;
     });
-  }, []);
+  }, [beats.length]);
 
   useEffect(() => () => clearTimer(), []);
 
@@ -74,7 +82,7 @@ export function SecretReveal() {
     }
   }, [done, pulse]);
 
-  const beat = BEATS[index];
+  const beat = beats[index];
 
   const handleRevealComplete = useCallback(() => {
     clearTimer();
@@ -100,9 +108,12 @@ export function SecretReveal() {
           />
         ) : null}
         {done ? (
-          <Animated.Text style={[styles.text, styles.final, finalStyle]}>
-            {SECRET_LETTER.final}
-          </Animated.Text>
+          <View style={styles.doneBlock}>
+            <Animated.Text style={[styles.text, styles.final, finalStyle]}>{content.final}</Animated.Text>
+            <Pressable onPress={onEdit} hitSlop={12}>
+              <Text style={styles.editLink}>Edit this letter</Text>
+            </Pressable>
+          </View>
         ) : null}
       </View>
     </Pressable>
@@ -127,5 +138,16 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.script,
     fontSize: fontSize.display,
     color: colors.gold,
+  },
+  doneBlock: {
+    alignItems: 'center',
+    gap: spacing.xl,
+  },
+  editLink: {
+    fontFamily: fontFamily.sansMedium,
+    fontSize: fontSize.sm,
+    color: colors.textMuted,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
 });

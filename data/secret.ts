@@ -1,9 +1,12 @@
+import type { SecretLetterContent } from '@/types';
+
 /**
  * The Secret Letter (SPEC.md Section 15 + 35.6). `body` is filled with
  * DEMO text so the experience feels complete — replace it with your own
- * real, deeply personal words whenever ready.
+ * real, deeply personal words whenever ready (or edit it directly from
+ * the app, once unlocked — hooks/useSecretLetter.ts).
  */
-export const SECRET_LETTER = {
+export const SECRET_LETTER: SecretLetterContent = {
   discoveryLine: 'You found something...',
   opening: 'তোমাকে একটা কথা বলতে চাই...',
   body: 'তোমাকে ছাড়া এই জীবনটা imagine করতেই পারি না। তুমি আমার সবচেয়ে বড় শান্তি, সবচেয়ে বড় ভরসা।',
