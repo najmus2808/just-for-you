@@ -37,7 +37,7 @@ export function SafeImage({ source, style, placeholderLabel, contentFit = 'cover
   }
 
   return (
-    <View style={style}>
+    <View style={[styles.imageWrapper, style]}>
       <Image
         source={source}
         style={StyleSheet.absoluteFill}
@@ -50,12 +50,16 @@ export function SafeImage({ source, style, placeholderLabel, contentFit = 'cover
 }
 
 const styles = StyleSheet.create({
+  imageWrapper: {
+    overflow: 'hidden',
+  },
   placeholder: {
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
     gap: spacing.xs,
+    overflow: 'hidden',
   },
   glyph: {
     fontSize: 28,
