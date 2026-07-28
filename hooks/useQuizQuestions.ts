@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 
 import { QUIZ_QUESTIONS as DEFAULT_QUESTIONS } from '@/data/quiz';
 import type { QuizQuestion } from '@/types';
@@ -24,6 +25,20 @@ export function useQuizQuestions() {
       cancelled = true;
     };
   }, []);
+
+  const refresh = useCallback(async () => {
+    const stored = await getItem<QuizQuestion[]>(STORAGE_KEY);
+    setQuestions(stored ?? DEFAULT_QUESTIONS);
+    setLoading(false);
+  }, []);
+
+  // The quiz screen stays mounted behind the edit screen, so it needs to
+  // re-read from storage whenever navigation returns to it.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   const updateQuestions = useCallback(async (next: QuizQuestion[]) => {
     setQuestions(next);

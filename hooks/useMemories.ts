@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 
 import type { Memory } from '@/types';
 import {
@@ -39,6 +40,15 @@ export function useMemories() {
       cancelled = true;
     };
   }, []);
+
+  // Screens like Home and the Memory Vault list stay mounted while an edit
+  // screen is pushed on top — without this, coming back after Save would
+  // still show the pre-edit state until the app fully restarted.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   const addMemory = useCallback(
     async (input: NewMemoryInput) => {

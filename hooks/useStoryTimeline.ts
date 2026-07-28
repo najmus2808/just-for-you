@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 
 import type { TimelineEvent } from '@/types';
 import { parseConfigDate } from '@/utils/dateUtils';
@@ -43,6 +44,14 @@ export function useStoryTimeline() {
       cancelled = true;
     };
   }, []);
+
+  // Our Story list stays mounted behind the Add/Edit Moment screen, so it
+  // needs to re-fetch when navigation returns to it, not just on mount.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   const addEvent = useCallback(
     async (input: NewStoryEventInput) => {

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 
 import { LETTERS as DEFAULT_LETTERS } from '@/data/letters';
 import type { Letter } from '@/types';
@@ -24,6 +25,20 @@ export function useLetters() {
       cancelled = true;
     };
   }, []);
+
+  const refresh = useCallback(async () => {
+    const stored = await getItem<Letter[]>(STORAGE_KEY);
+    setLetters(stored ?? DEFAULT_LETTERS);
+    setLoading(false);
+  }, []);
+
+  // The letters list stays mounted behind the edit screen, so it needs to
+  // re-read from storage whenever navigation returns to it.
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   const updateLetter = useCallback(
     async (id: string, lines: string[]) => {
