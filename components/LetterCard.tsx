@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -35,6 +35,18 @@ export function LetterCard({ letter }: Props) {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     router.push({ pathname: '/letters/[id]', params: { id: letter.id } });
   };
+
+  // The letters screen stays mounted underneath the detail screen, so `flipped`
+  // survives the round trip. Reset it whenever this card regains focus so the
+  // card shows the title again instead of the "Tap to open" envelope face.
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        flip.value = 0;
+        setFlipped(false);
+      };
+    }, [flip])
+  );
 
   const frontStyle = useAnimatedStyle(() => ({
     opacity: flip.value < 0.5 ? 1 : 0,

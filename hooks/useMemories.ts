@@ -1,27 +1,28 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { STARTER_MEMORIES } from '@/data/memories';
 import type { Memory } from '@/types';
 import {
   addUserMemory,
   deleteUserMemory,
   getUserMemories,
   type NewMemoryInput,
+  updateMemoryPhotos,
   updateUserMemory,
 } from '@/utils/memoryStorage';
 
 /**
- * Combines the starter/demo memories with whatever the user has added
- * on-device. User memories come first (newest first) so a freshly added
- * memory — and Home's featured card — always reflects the latest one.
+ * All memories — the starter/demo set gets seeded into the same store on
+ * first run (utils/memoryStorage.ts), so everything here is equally
+ * editable/deletable. Newest first, so a freshly added memory — and Home's
+ * featured card — always reflects the latest one.
  */
 export function useMemories() {
-  const [userMemories, setUserMemories] = useState<Memory[]>([]);
+  const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     const stored = await getUserMemories();
-    setUserMemories(stored);
+    setMemories(stored);
     setLoading(false);
   }, []);
 
@@ -30,7 +31,7 @@ export function useMemories() {
     (async () => {
       const stored = await getUserMemories();
       if (!cancelled) {
-        setUserMemories(stored);
+        setMemories(stored);
         setLoading(false);
       }
     })();
@@ -64,7 +65,13 @@ export function useMemories() {
     [refresh],
   );
 
-  const memories = [...userMemories, ...STARTER_MEMORIES];
+  const editMemoryPhotos = useCallback(
+    async (id: string, keepUris: string[], newPickedUris: string[]) => {
+      await updateMemoryPhotos(id, keepUris, newPickedUris);
+      await refresh();
+    },
+    [refresh],
+  );
 
-  return { memories, loading, refresh, addMemory, deleteMemory, editMemory };
+  return { memories, loading, refresh, addMemory, deleteMemory, editMemory, editMemoryPhotos };
 }

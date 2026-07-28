@@ -1,9 +1,11 @@
 import { Directory, File, Paths } from 'expo-file-system';
 
+import { STARTER_MEMORIES } from '@/data/memories';
 import type { Memory } from '@/types';
 import { getItem, setItem } from '@/utils/storage';
 
 const STORAGE_KEY = 'jfy:userMemories';
+const SEEDED_KEY = 'jfy:memoriesSeeded';
 
 function getMemoriesDirectory(): Directory {
   const directory = new Directory(Paths.document, 'memories');
@@ -18,10 +20,10 @@ function getMemoriesDirectory(): Directory {
  * every picked photo is copied into the app's own document storage before
  * the memory is saved (SPEC.md Section 36).
  */
-async function persistPickedPhoto(pickedUri: string, memoryId: string, index: number): Promise<string> {
+async function persistPickedPhoto(pickedUri: string, memoryId: string, suffix: string | number): Promise<string> {
   const source = new File(pickedUri);
   const extension = source.extension || '.jpg';
-  const destination = new File(getMemoriesDirectory(), `${memoryId}-${index}${extension}`);
+  const destination = new File(getMemoriesDirectory(), `${memoryId}-${suffix}${extension}`);
   await source.copy(destination);
   return destination.uri;
 }
@@ -34,7 +36,24 @@ export type NewMemoryInput = {
   pickedUris: string[];
 };
 
+/**
+ * The starter/demo memories (data/memories.ts) are copied into the same
+ * editable store as any real memory, the first time the app runs — after
+ * this, there's no separate "static, unmanageable" tier. Everything is
+ * editable and deletable from the Memory Vault itself.
+ */
+async function ensureSeeded(): Promise<void> {
+  const alreadySeeded = await getItem<boolean>(SEEDED_KEY);
+  if (alreadySeeded) return;
+
+  const stored = (await getItem<Memory[]>(STORAGE_KEY)) ?? [];
+  const seeded = STARTER_MEMORIES.map((memory) => ({ ...memory, isUserAdded: true }));
+  await setItem(STORAGE_KEY, [...stored, ...seeded]);
+  await setItem(SEEDED_KEY, true);
+}
+
 export async function getUserMemories(): Promise<Memory[]> {
+  await ensureSeeded();
   const stored = await getItem<Memory[]>(STORAGE_KEY);
   return stored ?? [];
 }
@@ -90,5 +109,42 @@ export async function updateUserMemory(
 ): Promise<void> {
   const existing = await getUserMemories();
   const next = existing.map((memory) => (memory.id === id ? { ...memory, ...patch } : memory));
+  await saveUserMemories(next);
+}
+
+/**
+ * Replaces a memory's photo set: `keepUris` are already-persisted photos to
+ * retain (in the desired order), `newPickedUris` are fresh image-picker
+ * URIs to persist and append. Any previously-persisted photo not in
+ * `keepUris` gets deleted from disk.
+ */
+export async function updateMemoryPhotos(
+  id: string,
+  keepUris: string[],
+  newPickedUris: string[],
+): Promise<void> {
+  const existing = await getUserMemories();
+  const memory = existing.find((item) => item.id === id);
+  if (!memory) return;
+
+  const keptSet = new Set(keepUris);
+  if (memory.photos) {
+    for (const photo of memory.photos) {
+      if (typeof photo === 'object' && 'uri' in photo && photo.uri && !keptSet.has(photo.uri)) {
+        try {
+          new File(photo.uri).delete();
+        } catch {
+          // Already gone — nothing to clean up.
+        }
+      }
+    }
+  }
+
+  const newUris = await Promise.all(
+    newPickedUris.map((uri, index) => persistPickedPhoto(uri, id, `${Date.now()}-${index}`)),
+  );
+
+  const nextPhotos = [...keepUris, ...newUris].map((uri) => ({ uri }));
+  const next = existing.map((item) => (item.id === id ? { ...item, photos: nextPhotos } : item));
   await saveUserMemories(next);
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
@@ -13,7 +13,7 @@ import Ionicons from '@expo/vector-icons/build/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 import { Button } from '@/components/Button';
 import { ScreenContainer } from '@/components/ScreenContainer';
@@ -23,11 +23,16 @@ import { fontFamily, fontSize } from '@/constants/typography';
 import { useMemories } from '@/hooks/useMemories';
 
 /**
- * "Memory Vault → + Add Memory" — the only place a photo permission prompt
- * ever appears, and only when reached here (SPEC.md Section 36).
+ * Doubles as "Add Memory" (SPEC.md Section 36) and, when opened with an
+ * `id` param, "Edit Memory" — same form, same photo picker, same premium
+ * feel either way.
  */
 export default function AddMemory() {
-  const { addMemory } = useMemories();
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const isEditing = Boolean(id);
+  const { memories, addMemory, editMemory, editMemoryPhotos } = useMemories();
+
+  const [existingUris, setExistingUris] = useState<string[]>([]);
   const [pickedUris, setPickedUris] = useState<string[]>([]);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState<Date>(new Date());
@@ -35,6 +40,27 @@ export default function AddMemory() {
   const [location, setLocation] = useState('');
   const [caption, setCaption] = useState('');
   const [saving, setSaving] = useState(false);
+  const [prefilled, setPrefilled] = useState(!isEditing);
+
+  useEffect(() => {
+    if (!isEditing || prefilled) return;
+    const memory = memories.find((item) => item.id === id);
+    if (!memory) return;
+
+    (async () => {
+      setTitle(memory.title);
+      setLocation(memory.location ?? '');
+      setCaption(memory.caption);
+      const parsedDate = new Date(`${memory.date}T00:00:00`);
+      setDate(Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate);
+      setExistingUris(
+        (memory.photos ?? [])
+          .filter((photo): photo is { uri: string } => typeof photo === 'object' && 'uri' in photo)
+          .map((photo) => photo.uri),
+      );
+      setPrefilled(true);
+    })();
+  }, [isEditing, prefilled, memories, id]);
 
   const handlePickPhotos = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -47,23 +73,28 @@ export default function AddMemory() {
     }
   };
 
-  const removePhoto = (uri: string) => {
+  const removeExistingPhoto = (uri: string) => {
+    setExistingUris((current) => current.filter((item) => item !== uri));
+  };
+
+  const removePickedPhoto = (uri: string) => {
     setPickedUris((current) => current.filter((item) => item !== uri));
   };
 
-  const canSave = pickedUris.length > 0 && title.trim().length > 0 && !saving;
+  const totalPhotoCount = existingUris.length + pickedUris.length;
+  const canSave = totalPhotoCount > 0 && title.trim().length > 0 && !saving && prefilled;
 
   const handleSave = async () => {
     if (!canSave) return;
     setSaving(true);
     try {
-      await addMemory({
-        title,
-        date: date.toISOString().slice(0, 10),
-        location,
-        caption,
-        pickedUris,
-      });
+      const dateString = date.toISOString().slice(0, 10);
+      if (isEditing && id) {
+        await editMemory(id, { title, date: dateString, location, caption });
+        await editMemoryPhotos(id, existingUris, pickedUris);
+      } else {
+        await addMemory({ title, date: dateString, location, caption, pickedUris });
+      }
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
       router.back();
     } catch {
@@ -87,8 +118,10 @@ export default function AddMemory() {
           </Pressable>
         </View>
 
-        <Text style={styles.title}>Add a Memory</Text>
-        <Text style={styles.subtitle}>Another chapter in our story.</Text>
+        <Text style={styles.title}>{isEditing ? 'Edit Memory' : 'Add a Memory'}</Text>
+        <Text style={styles.subtitle}>
+          {isEditing ? 'Update this chapter.' : 'Another chapter in our story.'}
+        </Text>
 
         <ScrollView
           horizontal
@@ -96,12 +129,25 @@ export default function AddMemory() {
           style={styles.photoRow}
           contentContainerStyle={styles.photoRowContent}
         >
+          {existingUris.map((uri) => (
+            <View key={uri} style={styles.thumbWrapper}>
+              <Image source={{ uri }} style={styles.thumb} />
+              <Pressable
+                style={styles.removeBadge}
+                onPress={() => removeExistingPhoto(uri)}
+                accessibilityRole="button"
+                accessibilityLabel="Remove photo"
+              >
+                <Ionicons name="close" size={14} color={colors.background} />
+              </Pressable>
+            </View>
+          ))}
           {pickedUris.map((uri) => (
             <View key={uri} style={styles.thumbWrapper}>
               <Image source={{ uri }} style={styles.thumb} />
               <Pressable
                 style={styles.removeBadge}
-                onPress={() => removePhoto(uri)}
+                onPress={() => removePickedPhoto(uri)}
                 accessibilityRole="button"
                 accessibilityLabel="Remove photo"
               >
@@ -111,9 +157,7 @@ export default function AddMemory() {
           ))}
           <Pressable style={styles.addPhotoTile} onPress={handlePickPhotos}>
             <Ionicons name="images-outline" size={24} color={colors.gold} />
-            <Text style={styles.addPhotoLabel}>
-              {pickedUris.length ? 'Add more' : 'Select photos'}
-            </Text>
+            <Text style={styles.addPhotoLabel}>{totalPhotoCount ? 'Add more' : 'Select photos'}</Text>
           </Pressable>
         </ScrollView>
 
@@ -163,7 +207,7 @@ export default function AddMemory() {
         />
 
         <Button
-          label={saving ? 'Saving...' : 'Save Memory'}
+          label={saving ? 'Saving...' : isEditing ? 'Update Memory' : 'Save Memory'}
           onPress={handleSave}
           disabled={!canSave}
           style={styles.saveButton}

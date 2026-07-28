@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -55,19 +55,33 @@ export default function MemoryDetail() {
       </Pressable>
 
       {memory.isUserAdded ? (
-        <Pressable
-          style={[styles.deleteButton, { top: insets.top + spacing.sm }]}
-          onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-            handleDelete();
-          }}
-          disabled={deleting}
-          hitSlop={12}
-          accessibilityRole="button"
-          accessibilityLabel="Delete this memory"
-        >
-          <Ionicons name="trash-outline" size={20} color={colors.textSecondary} />
-        </Pressable>
+        <View style={[styles.actionRow, { top: insets.top + spacing.sm }]}>
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+              router.push({ pathname: '/memories/add', params: { id: memory.id } });
+            }}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Edit this memory"
+          >
+            <Ionicons name="pencil-outline" size={18} color={colors.textSecondary} />
+          </Pressable>
+          <Pressable
+            style={styles.actionButton}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+              handleDelete();
+            }}
+            disabled={deleting}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Delete this memory"
+          >
+            <Ionicons name="trash-outline" size={18} color={colors.textSecondary} />
+          </Pressable>
+        </View>
       ) : null}
     </ScreenContainer>
   );
@@ -84,9 +98,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  deleteButton: {
+  actionRow: {
     position: 'absolute',
     right: spacing.lg,
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  actionButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
