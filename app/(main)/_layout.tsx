@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router/js-tabs';
 
 import { TabBar } from '@/components/TabBar';
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/context/ThemeContext';
 
 /**
  * Home, Our Story, Memories, Letters, More (SPEC.md Section 11) behind a
@@ -9,6 +9,8 @@ import { colors } from '@/constants/colors';
  * bottom-tabs look.
  */
 export default function MainLayout() {
+  const { colors } = useTheme();
+
   return (
     <Tabs
       tabBar={(props) => <TabBar {...props} />}

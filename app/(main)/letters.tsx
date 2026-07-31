@@ -1,14 +1,18 @@
+import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { LetterCard } from '@/components/LetterCard';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useLetters } from '@/hooks/useLetters';
 
 /** The "Open When..." experience (SPEC.md Section 14). */
 export default function Letters() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { letters } = useLetters();
 
   return (
@@ -36,31 +40,32 @@ export default function Letters() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxxl * 2,
-  },
-  header: {
-    paddingTop: spacing.xl,
-    marginBottom: spacing.lg,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-  },
-  row: {
-    gap: spacing.md,
-  },
-  cell: {
-    flex: 1,
-    marginBottom: spacing.md,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xxxl * 2,
+    },
+    header: {
+      paddingTop: spacing.xl,
+      marginBottom: spacing.lg,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginBottom: spacing.xs,
+    },
+    subtitle: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+    },
+    row: {
+      gap: spacing.md,
+    },
+    cell: {
+      flex: 1,
+      marginBottom: spacing.md,
+    },
+  });

@@ -1,12 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { AmbientGlow } from '@/components/AmbientGlow';
 import { AnimatedText } from '@/components/AnimatedText';
-import { FloatingParticles } from '@/components/FloatingParticles';
-import { colors } from '@/constants/colors';
+import { FloatingHearts } from '@/components/FloatingHearts';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useFinalMessage } from '@/hooks/useFinalMessage';
@@ -21,7 +28,7 @@ type Beat = {
 
 const isBangla = (text: string) => /[ঀ-৿]/.test(text);
 
-function buildBeats(lines: string[]): Beat[] {
+function buildBeats(lines: string[], colors: ThemeColors): Beat[] {
   return lines.map((text, index) => {
     const isLast = index === lines.length - 1;
     const isPenultimate = index === lines.length - 2;
@@ -54,8 +61,10 @@ type Props = {
 
 /** The emotional climax of the app (SPEC.md Section 22). */
 export function FinalSurprise({ onReplay, onEdit }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { beats: lines } = useFinalMessage();
-  const beats = useMemo(() => buildBeats(lines), [lines]);
+  const beats = useMemo(() => buildBeats(lines, colors), [lines, colors]);
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -85,7 +94,11 @@ export function FinalSurprise({ onReplay, onEdit }: Props) {
   useEffect(() => {
     if (done) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      pulse.value = withRepeat(withTiming(1, { duration: 1800, easing: Easing.inOut(Easing.sin) }), -1, true);
+      pulse.value = withRepeat(
+        withTiming(1, { duration: 1800, easing: Easing.inOut(Easing.sin) }),
+        -1,
+        true,
+      );
     }
   }, [done, pulse]);
 
@@ -103,8 +116,8 @@ export function FinalSurprise({ onReplay, onEdit }: Props) {
 
   return (
     <Pressable style={styles.container} onPress={done ? undefined : advance}>
-      <AmbientGlow color="rgba(216, 178, 106, 0.2)" />
-      <FloatingParticles count={12} />
+      <AmbientGlow />
+      <FloatingHearts count={16} />
 
       <View style={styles.center}>
         {!done && beat ? (
@@ -142,38 +155,39 @@ export function FinalSurprise({ onReplay, onEdit }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    overflow: 'hidden',
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  doneBlock: {
-    alignItems: 'center',
-    gap: spacing.xl,
-  },
-  doneText: {
-    fontFamily: fontFamily.banglaSerifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    textAlign: 'center',
-  },
-  linkRow: {
-    flexDirection: 'row',
-    gap: spacing.xl,
-    marginTop: spacing.md,
-  },
-  linkText: {
-    fontFamily: fontFamily.sansMedium,
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      overflow: 'hidden',
+    },
+    center: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.xl,
+    },
+    doneBlock: {
+      alignItems: 'center',
+      gap: spacing.xl,
+    },
+    doneText: {
+      fontFamily: fontFamily.banglaSerifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      textAlign: 'center',
+    },
+    linkRow: {
+      flexDirection: 'row',
+      gap: spacing.xl,
+      marginTop: spacing.md,
+    },
+    linkText: {
+      fontFamily: fontFamily.sansMedium,
+      fontSize: fontSize.sm,
+      color: colors.textMuted,
+      letterSpacing: 1,
+      textTransform: 'uppercase',
+    },
+  });

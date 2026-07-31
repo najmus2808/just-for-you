@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
 
 import { Button } from '@/components/Button';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useSecretLetter } from '@/hooks/useSecretLetter';
 import type { SecretLetterContent } from '@/types';
+import { showAlert } from '@/utils/alert';
+import { goBack } from '@/utils/navigation';
 
 const FIELDS: { key: keyof SecretLetterContent; label: string; multiline?: boolean }[] = [
   { key: 'discoveryLine', label: 'Discovery line (shown before unlocking)' },
@@ -22,6 +24,8 @@ const FIELDS: { key: keyof SecretLetterContent; label: string; multiline?: boole
 ];
 
 export default function EditSecretLetter() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { content, updateContent } = useSecretLetter();
   const [draft, setDraft] = useState<SecretLetterContent>(content);
   const [saving, setSaving] = useState(false);
@@ -40,9 +44,9 @@ export default function EditSecretLetter() {
     try {
       await updateContent(draft);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      router.back();
+      goBack();
     } catch {
-      Alert.alert('Something went wrong', 'Could not save. Please try again.');
+      showAlert('Something went wrong', 'Could not save. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -53,7 +57,7 @@ export default function EditSecretLetter() {
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.headerRow}>
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => goBack()}
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel="Cancel"
@@ -77,51 +81,57 @@ export default function EditSecretLetter() {
           </View>
         ))}
 
-        <Button label={saving ? 'Saving...' : 'Save'} onPress={handleSave} disabled={saving} style={styles.saveButton} />
+        <Button
+          label={saving ? 'Saving...' : 'Save'}
+          onPress={handleSave}
+          disabled={saving}
+          style={styles.saveButton}
+        />
       </ScrollView>
     </ScreenContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxxl * 2,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingTop: spacing.md,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginBottom: spacing.lg,
-  },
-  label: {
-    fontFamily: fontFamily.sansSemiBold,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: spacing.xs,
-    marginTop: spacing.md,
-  },
-  input: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    fontFamily: fontFamily.banglaRegular,
-    fontSize: fontSize.md,
-    color: colors.cream,
-  },
-  multiline: {
-    minHeight: 100,
-    textAlignVertical: 'top',
-  },
-  saveButton: {
-    marginTop: spacing.xl,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xxxl * 2,
+    },
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      paddingTop: spacing.md,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginBottom: spacing.lg,
+    },
+    label: {
+      fontFamily: fontFamily.sansSemiBold,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+      marginBottom: spacing.xs,
+      marginTop: spacing.md,
+    },
+    input: {
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      fontFamily: fontFamily.banglaRegular,
+      fontSize: fontSize.md,
+      color: colors.cream,
+    },
+    multiline: {
+      minHeight: 100,
+      textAlignVertical: 'top',
+    },
+    saveButton: {
+      marginTop: spacing.xl,
+    },
+  });

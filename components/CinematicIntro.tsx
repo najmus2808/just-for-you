@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 
 import { AmbientGlow } from '@/components/AmbientGlow';
 import { AnimatedText } from '@/components/AnimatedText';
-import { FloatingParticles } from '@/components/FloatingParticles';
+import { FloatingHearts } from '@/components/FloatingHearts';
 import { SafeImage } from '@/components/SafeImage';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { APP_CONFIG } from '@/data/appConfig';
+import { useIntroPhoto } from '@/hooks/useIntroPhoto';
 
 type TextBeat = {
   kind: 'text';
@@ -45,6 +49,9 @@ type Props = {
  * wait out the pacing.
  */
 export function CinematicIntro({ onComplete }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   const beats = useMemo<Beat[]>(
     () => [
       {
@@ -119,8 +126,10 @@ export function CinematicIntro({ onComplete }: Props) {
         hold: 2600,
       },
     ],
-    [],
+    [colors],
   );
+
+  const { uri: introPhotoUri, updateUri: setIntroPhotoUri } = useIntroPhoto();
 
   const [index, setIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -159,14 +168,30 @@ export function CinematicIntro({ onComplete }: Props) {
     timerRef.current = setTimeout(advance, beat?.hold ?? 1500);
   }, [advance, beat]);
 
+  // Picking a photo can take a while (native picker UI) — pause the
+  // auto-advance while it's open, then restart the hold from scratch so
+  // the newly set photo actually gets seen instead of skipping past it.
+  const handlePickPhoto = useCallback(async () => {
+    clearTimer();
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.85,
+    });
+    if (!result.canceled && result.assets[0]) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      await setIntroPhotoUri(result.assets[0].uri);
+    }
+    timerRef.current = setTimeout(advance, beat?.hold ?? 2600);
+  }, [advance, beat, setIntroPhotoUri]);
+
   if (!beat) {
     return null;
   }
 
   return (
     <Pressable style={styles.container} onPress={advance}>
-      <AmbientGlow />
-      <FloatingParticles count={8} />
+      <AmbientGlow sparkle />
+      <FloatingHearts count={10} />
 
       <View style={styles.center}>
         {beat.kind === 'text' ? (
@@ -184,7 +209,20 @@ export function CinematicIntro({ onComplete }: Props) {
           />
         ) : (
           <View key={beat.id} style={styles.photoScene}>
-            <SafeImage style={styles.photo} />
+            <Pressable onPress={handlePickPhoto} style={styles.photoTouchable}>
+              <SafeImage
+                source={introPhotoUri ? { uri: introPhotoUri } : undefined}
+                style={styles.photo}
+                placeholderLabel="Tap to add our photo"
+              />
+              <View style={styles.photoEditBadge}>
+                <Ionicons
+                  name={introPhotoUri ? 'camera' : 'add'}
+                  size={16}
+                  color={colors.background}
+                />
+              </View>
+            </Pressable>
             <AnimatedText
               text={beat.caption}
               mode="fade"
@@ -199,31 +237,48 @@ export function CinematicIntro({ onComplete }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    overflow: 'hidden',
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  photoScene: {
-    alignItems: 'center',
-    gap: spacing.lg,
-  },
-  photo: {
-    width: 240,
-    height: 300,
-    borderRadius: 16,
-  },
-  caption: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xl,
-    color: colors.cream,
-    textAlign: 'center',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      overflow: 'hidden',
+    },
+    center: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.xl,
+    },
+    photoScene: {
+      alignItems: 'center',
+      gap: spacing.lg,
+    },
+    photoTouchable: {
+      position: 'relative',
+    },
+    photo: {
+      width: 240,
+      height: 300,
+      borderRadius: 16,
+    },
+    photoEditBadge: {
+      position: 'absolute',
+      bottom: 8,
+      right: 8,
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: colors.gold,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 2,
+      borderColor: colors.background,
+    },
+    caption: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xl,
+      color: colors.cream,
+      textAlign: 'center',
+    },
+  });

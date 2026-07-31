@@ -1,16 +1,21 @@
-import { Alert, Pressable, StyleSheet } from 'react-native';
+import { useMemo } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { Timeline } from '@/components/Timeline';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { shadows } from '@/constants/shadows';
 import { useStoryTimeline } from '@/hooks/useStoryTimeline';
+import { showAlert } from '@/utils/alert';
 
 export default function Story() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { events, deleteEvent } = useStoryTimeline();
 
   const handleAdd = () => {
@@ -25,7 +30,7 @@ export default function Story() {
 
   const handleDelete = (id: string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    Alert.alert('Delete this moment?', 'This cannot be undone.', [
+    showAlert('Delete this moment?', 'This cannot be undone.', [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Delete', style: 'destructive', onPress: () => deleteEvent(id) },
     ]);
@@ -46,20 +51,21 @@ export default function Story() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  fab: {
-    position: 'absolute',
-    right: spacing.lg,
-    bottom: spacing.xxxl,
-    width: 56,
-    height: 56,
-    borderRadius: radius.pill,
-    backgroundColor: colors.gold,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...shadows.floating,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    fab: {
+      position: 'absolute',
+      right: spacing.lg,
+      bottom: spacing.xxxl,
+      width: 56,
+      height: 56,
+      borderRadius: radius.pill,
+      backgroundColor: colors.gold,
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...shadows.floating,
+    },
+  });

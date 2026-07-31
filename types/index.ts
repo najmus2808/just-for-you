@@ -54,6 +54,14 @@ export interface QuizQuestion {
   correctIndex: number;
 }
 
+export interface Quiz {
+  id: string;
+  /** e.g. "How Well Do You Know Us?" — each quiz has its own title. */
+  title: string;
+  questions: QuizQuestion[];
+  createdAt?: string;
+}
+
 export interface Song {
   id: string;
   title: string;
@@ -87,4 +95,13 @@ export interface Memory {
   /** Present only on memories the user added on-device via the picker. */
   isUserAdded?: boolean;
   createdAt?: string;
+}
+
+export interface Place {
+  id: string;
+  /** Name of the place, e.g. "Cox's Bazar". */
+  name: string;
+  /** Optional note about the trip — when, or what made it special. */
+  note?: string;
+  createdAt: string;
 }

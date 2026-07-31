@@ -1,4 +1,5 @@
 import { Directory, File, Paths } from 'expo-file-system';
+import { Platform } from 'react-native';
 
 import { STARTER_MEMORIES } from '@/data/memories';
 import type { Memory } from '@/types';
@@ -18,9 +19,19 @@ function getMemoriesDirectory(): Directory {
 /**
  * Image-picker URIs aren't guaranteed to survive an app/device restart, so
  * every picked photo is copied into the app's own document storage before
- * the memory is saved (SPEC.md Section 36).
+ * the memory is saved (SPEC.md Section 36). `expo-file-system` is a no-op
+ * stub on web (no real filesystem to copy into), so there the picked URI
+ * — a blob: URL — is used as-is; it won't survive a page refresh, but
+ * that's an inherent browser limitation, not something worth crashing over.
  */
-async function persistPickedPhoto(pickedUri: string, memoryId: string, suffix: string | number): Promise<string> {
+async function persistPickedPhoto(
+  pickedUri: string,
+  memoryId: string,
+  suffix: string | number,
+): Promise<string> {
+  if (Platform.OS === 'web') {
+    return pickedUri;
+  }
   const source = new File(pickedUri);
   const extension = source.extension || '.jpg';
   const destination = new File(getMemoriesDirectory(), `${memoryId}-${suffix}${extension}`);
@@ -90,7 +101,7 @@ export async function deleteUserMemory(id: string): Promise<void> {
   const remaining = existing.filter((memory) => memory.id !== id);
   await saveUserMemories(remaining);
 
-  if (target?.photos) {
+  if (Platform.OS !== 'web' && target?.photos) {
     for (const photo of target.photos) {
       if (typeof photo === 'object' && 'uri' in photo && photo.uri) {
         try {
@@ -128,7 +139,7 @@ export async function updateMemoryPhotos(
   if (!memory) return;
 
   const keptSet = new Set(keepUris);
-  if (memory.photos) {
+  if (Platform.OS !== 'web' && memory.photos) {
     for (const photo of memory.photos) {
       if (typeof photo === 'object' && 'uri' in photo && photo.uri && !keptSet.has(photo.uri)) {
         try {

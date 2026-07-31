@@ -1,6 +1,7 @@
 // Subpath import — the barrel `@expo/vector-icons` re-exports all 19 icon
 // families and Metro bundles every referenced .ttf regardless, even for
 // icon sets never rendered. This pulls in only Ionicons' font file.
+import { useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
@@ -8,11 +9,16 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
+import { hexToRgba } from '@/utils/color';
 
-const ICONS: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
+const ICONS: Record<
+  string,
+  { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }
+> = {
   home: { active: 'home', inactive: 'home-outline' },
   story: { active: 'book', inactive: 'book-outline' },
   memories: { active: 'images', inactive: 'images-outline' },
@@ -35,6 +41,8 @@ const LABELS: Record<string, string> = {
  */
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <View style={[styles.wrapper, { bottom: insets.bottom + spacing.sm }]} pointerEvents="box-none">
@@ -83,6 +91,8 @@ function TabItem({
   focused: boolean;
   onPress: () => void;
 }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: withTiming(focused ? 1 : 0.55, { duration: 200 }),
     transform: [{ scale: withTiming(focused ? 1 : 0.94, { duration: 200 }) }],
@@ -99,7 +109,11 @@ function TabItem({
     >
       <Animated.View style={[styles.itemInner, animatedStyle]}>
         {iconName ? (
-          <Ionicons name={iconName} size={20} color={focused ? colors.gold : colors.textSecondary} />
+          <Ionicons
+            name={iconName}
+            size={20}
+            color={focused ? colors.gold : colors.textSecondary}
+          />
         ) : null}
         <Text style={[styles.label, focused && styles.labelFocused]}>{label}</Text>
       </Animated.View>
@@ -107,38 +121,39 @@ function TabItem({
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    left: spacing.lg,
-    right: spacing.lg,
-    alignItems: 'center',
-  },
-  bar: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(22, 19, 26, 0.92)',
-    borderRadius: radius.pill,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.xs,
-    width: '100%',
-  },
-  item: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  itemInner: {
-    alignItems: 'center',
-    gap: 2,
-  },
-  label: {
-    fontFamily: fontFamily.sansMedium,
-    fontSize: fontSize.xs,
-    color: colors.textSecondary,
-  },
-  labelFocused: {
-    color: colors.gold,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    wrapper: {
+      position: 'absolute',
+      left: spacing.lg,
+      right: spacing.lg,
+      alignItems: 'center',
+    },
+    bar: {
+      flexDirection: 'row',
+      backgroundColor: hexToRgba(colors.midnight, 0.92),
+      borderRadius: radius.pill,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.border,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.xs,
+      width: '100%',
+    },
+    item: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    itemInner: {
+      alignItems: 'center',
+      gap: 2,
+    },
+    label: {
+      fontFamily: fontFamily.sansMedium,
+      fontSize: fontSize.xs,
+      color: colors.textSecondary,
+    },
+    labelFocused: {
+      color: colors.gold,
+    },
+  });

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { spacing } from '@/constants/spacing';
 
@@ -22,6 +23,8 @@ type Props = {
  * stand-in instead of a broken image icon or a red-box error.
  */
 export function SafeImage({ source, style, placeholderLabel, contentFit = 'cover' }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [failed, setFailed] = useState(false);
 
   if (!source || failed) {
@@ -49,28 +52,29 @@ export function SafeImage({ source, style, placeholderLabel, contentFit = 'cover
   );
 }
 
-const styles = StyleSheet.create({
-  imageWrapper: {
-    overflow: 'hidden',
-  },
-  placeholder: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-    gap: spacing.xs,
-    overflow: 'hidden',
-  },
-  glyph: {
-    fontSize: 28,
-    color: colors.pinkAccent,
-    opacity: 0.6,
-  },
-  label: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    textAlign: 'center',
-    paddingHorizontal: spacing.md,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    imageWrapper: {
+      overflow: 'hidden',
+    },
+    placeholder: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.border,
+      gap: spacing.xs,
+      overflow: 'hidden',
+    },
+    glyph: {
+      fontSize: 28,
+      color: colors.pinkAccent,
+      opacity: 0.6,
+    },
+    label: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+      textAlign: 'center',
+      paddingHorizontal: spacing.md,
+    },
+  });

@@ -1,16 +1,19 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 import { AnimatedText } from '@/components/AnimatedText';
 import { Card } from '@/components/Card';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useDailySurprise } from '@/hooks/useDailySurprise';
 
 /** "Today's little reminder" teaser on Home (SPEC.md Section 16). */
 export function DailySurpriseCard() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const message = useDailySurprise();
   const [revealed, setRevealed] = useState(false);
 
@@ -33,26 +36,27 @@ export function DailySurpriseCard() {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    gap: spacing.xs,
-  },
-  label: {
-    fontFamily: fontFamily.sansSemiBold,
-    fontSize: fontSize.xs,
-    color: colors.pinkAccent,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  hint: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-  },
-  message: {
-    fontFamily: fontFamily.banglaRegular,
-    fontSize: fontSize.md,
-    lineHeight: fontSize.md * 1.6,
-    color: colors.cream,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    card: {
+      gap: spacing.xs,
+    },
+    label: {
+      fontFamily: fontFamily.sansSemiBold,
+      fontSize: fontSize.xs,
+      color: colors.pinkAccent,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+    },
+    hint: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textMuted,
+    },
+    message: {
+      fontFamily: fontFamily.banglaRegular,
+      fontSize: fontSize.md,
+      lineHeight: fontSize.md * 1.6,
+      color: colors.cream,
+    },
+  });

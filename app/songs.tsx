@@ -1,20 +1,25 @@
+import { useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
-import { router } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MusicPlayer } from '@/components/MusicPlayer';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { SONGS } from '@/data/songs';
+import { goBack } from '@/utils/navigation';
 
 export default function Songs() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <ScreenContainer gradient style={styles.container}>
       <Pressable
         style={styles.back}
-        onPress={() => router.back()}
+        onPress={() => goBack()}
         hitSlop={12}
         accessibilityRole="button"
         accessibilityLabel="Go back"
@@ -42,36 +47,37 @@ export default function Songs() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  back: {
-    position: 'absolute',
-    top: spacing.xl,
-    right: spacing.lg,
-    zIndex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxxl * 2,
-  },
-  header: {
-    paddingTop: spacing.xxxl,
-    marginBottom: spacing.lg,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-  },
-  cell: {
-    marginBottom: spacing.md,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    back: {
+      position: 'absolute',
+      top: spacing.xl,
+      right: spacing.lg,
+      zIndex: 1,
+    },
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xxxl * 2,
+    },
+    header: {
+      paddingTop: spacing.xxxl,
+      marginBottom: spacing.lg,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginBottom: spacing.xs,
+    },
+    subtitle: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+    },
+    cell: {
+      marginBottom: spacing.md,
+    },
+  });

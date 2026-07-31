@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
@@ -9,7 +9,8 @@ import { Card } from '@/components/Card';
 import { DailySurpriseCard } from '@/components/DailySurpriseCard';
 import { SafeImage } from '@/components/SafeImage';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { APP_CONFIG } from '@/data/appConfig';
@@ -18,6 +19,8 @@ import { formatDisplayDate, getGreeting } from '@/utils/dateUtils';
 
 /** The entrance to a private world, not a dashboard (SPEC.md Section 10). */
 export default function Home() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { memories } = useMemories();
   const memory = memories[0] ?? null;
   const dateTapCount = useRef(0);
@@ -84,55 +87,56 @@ export default function Home() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xxxl * 2,
-    gap: spacing.sm,
-  },
-  date: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  greeting: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginTop: spacing.xs,
-  },
-  subline: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.lg,
-  },
-  memoryCard: {
-    gap: spacing.md,
-  },
-  memoryLabel: {
-    fontFamily: fontFamily.sansSemiBold,
-    fontSize: fontSize.xs,
-    color: colors.pinkAccent,
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-  },
-  memoryPhoto: {
-    width: '100%',
-    height: 220,
-    borderRadius: 12,
-  },
-  memoryPromptRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  memoryPrompt: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.md,
-    color: colors.cream,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.xl,
+      paddingBottom: spacing.xxxl * 2,
+      gap: spacing.sm,
+    },
+    date: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+    },
+    greeting: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginTop: spacing.xs,
+    },
+    subline: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+      marginBottom: spacing.lg,
+    },
+    memoryCard: {
+      gap: spacing.md,
+    },
+    memoryLabel: {
+      fontFamily: fontFamily.sansSemiBold,
+      fontSize: fontSize.xs,
+      color: colors.pinkAccent,
+      textTransform: 'uppercase',
+      letterSpacing: 1.2,
+    },
+    memoryPhoto: {
+      width: '100%',
+      height: 220,
+      borderRadius: 12,
+    },
+    memoryPromptRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    memoryPrompt: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.md,
+      color: colors.cream,
+    },
+  });

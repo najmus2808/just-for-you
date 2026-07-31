@@ -1,18 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
-import { router } from 'expo-router';
 
 import { Button } from '@/components/Button';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useFinalMessage } from '@/hooks/useFinalMessage';
+import { showAlert } from '@/utils/alert';
+import { goBack } from '@/utils/navigation';
 
 /** Edit the Final Surprise's line-by-line closing message (SPEC.md Section 22). */
 export default function EditFinalMessage() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { beats, updateBeats } = useFinalMessage();
   const [body, setBody] = useState('');
   const [saving, setSaving] = useState(false);
@@ -37,9 +41,9 @@ export default function EditFinalMessage() {
     try {
       await updateBeats(lines);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      router.back();
+      goBack();
     } catch {
-      Alert.alert('Something went wrong', 'Could not save. Please try again.');
+      showAlert('Something went wrong', 'Could not save. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -50,7 +54,7 @@ export default function EditFinalMessage() {
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.headerRow}>
           <Pressable
-            onPress={() => router.back()}
+            onPress={() => goBack()}
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel="Cancel"
@@ -84,40 +88,41 @@ export default function EditFinalMessage() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxxl * 2,
-    flexGrow: 1,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingTop: spacing.md,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-  },
-  subtitle: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.lg,
-  },
-  input: {
-    flex: 1,
-    minHeight: 240,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    padding: spacing.md,
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.md,
-    color: colors.cream,
-    textAlignVertical: 'top',
-  },
-  saveButton: {
-    marginTop: spacing.xl,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xxxl * 2,
+      flexGrow: 1,
+    },
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      paddingTop: spacing.md,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+    },
+    subtitle: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+      marginBottom: spacing.lg,
+    },
+    input: {
+      flex: 1,
+      minHeight: 240,
+      backgroundColor: colors.surface,
+      borderRadius: radius.md,
+      padding: spacing.md,
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.md,
+      color: colors.cream,
+      textAlignVertical: 'top',
+    },
+    saveButton: {
+      marginTop: spacing.xl,
+    },
+  });

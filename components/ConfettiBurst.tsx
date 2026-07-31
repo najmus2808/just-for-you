@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/context/ThemeContext';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-const PIECE_COLORS = [colors.gold, colors.pinkAccent, colors.cream, colors.burgundy];
 const PIECE_COUNT = 24;
 
 type PieceConfig = {
@@ -51,12 +56,14 @@ function Piece({ config }: { config: PieceConfig }) {
 
 /** A one-time confetti burst for the anniversary-day celebration (SPEC.md Section 17). */
 export function ConfettiBurst() {
+  const { colors } = useTheme();
   const reducedMotion = useReducedMotion();
+  const pieceColors = [colors.gold, colors.pinkAccent, colors.cream, colors.burgundy];
   const [pieces] = useState<PieceConfig[]>(() =>
     Array.from({ length: PIECE_COUNT }, (_, id) => ({
       id,
       left: Math.random() * 100,
-      color: PIECE_COLORS[id % PIECE_COLORS.length],
+      color: pieceColors[id % pieceColors.length],
       size: 6 + Math.random() * 6,
       delay: Math.random() * 400,
       duration: 2200 + Math.random() * 800,

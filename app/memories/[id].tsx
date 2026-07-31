@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -8,11 +8,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MemoryViewer } from '@/components/MemoryViewer';
 import { PlaceholderScreen } from '@/components/PlaceholderScreen';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { useMemories } from '@/hooks/useMemories';
+import { showAlert } from '@/utils/alert';
+import { hexToRgba } from '@/utils/color';
+import { goBack } from '@/utils/navigation';
 
 export default function MemoryDetail() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { memories, deleteMemory } = useMemories();
@@ -21,7 +27,7 @@ export default function MemoryDetail() {
   const memory = memories.find((item) => item.id === id);
 
   const handleDelete = () => {
-    Alert.alert('Delete this memory?', 'This cannot be undone.', [
+    showAlert('Delete this memory?', 'This cannot be undone.', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
@@ -30,7 +36,7 @@ export default function MemoryDetail() {
           if (!memory) return;
           setDeleting(true);
           await deleteMemory(memory.id);
-          router.back();
+          goBack();
         },
       },
     ]);
@@ -46,7 +52,7 @@ export default function MemoryDetail() {
 
       <Pressable
         style={[styles.backButton, { top: insets.top + spacing.sm }]}
-        onPress={() => router.back()}
+        onPress={() => goBack()}
         hitSlop={12}
         accessibilityRole="button"
         accessibilityLabel="Go back"
@@ -87,29 +93,30 @@ export default function MemoryDetail() {
   );
 }
 
-const styles = StyleSheet.create({
-  backButton: {
-    position: 'absolute',
-    left: spacing.lg,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(11, 10, 13, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actionRow: {
-    position: 'absolute',
-    right: spacing.lg,
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(11, 10, 13, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    backButton: {
+      position: 'absolute',
+      left: spacing.lg,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: hexToRgba(colors.midnight, 0.6),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    actionRow: {
+      position: 'absolute',
+      right: spacing.lg,
+      flexDirection: 'row',
+      gap: spacing.sm,
+    },
+    actionButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: hexToRgba(colors.midnight, 0.6),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });

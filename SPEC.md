@@ -28,13 +28,13 @@ The primary goal is:
 
 The experience should create a strong:
 
-* WOW feeling
-* Surprise feeling
-* Emotional connection
-* Curiosity
-* Nostalgia
-* Personalization
-* "He made this specifically for me" feeling
+- WOW feeling
+- Surprise feeling
+- Emotional connection
+- Curiosity
+- Nostalgia
+- Personalization
+- "He made this specifically for me" feeling
 
 The app should feel like a premium product rather than a simple developer project.
 
@@ -44,11 +44,11 @@ To be explicit about what this is NOT, so the wrong instinct never creeps into a
 
 This is NOT:
 
-* A generic love quote app
-* A basic CRUD application
-* A simple photo gallery
-* A Valentine's Day template
-* A tutorial project
+- A generic love quote app
+- A basic CRUD application
+- A simple photo gallery
+- A Valentine's Day template
+- A tutorial project
 
 This IS:
 
@@ -70,15 +70,15 @@ See Section 35 for the Bangla + English language strategy that is core to this i
 
 Use:
 
-* React Native
-* Expo
-* TypeScript
-* Expo Router
-* React Native Reanimated
-* React Native Gesture Handler where useful
-* Expo Haptics
-* Expo Audio for local audio
-* AsyncStorage only if local persistence is required
+- React Native
+- Expo
+- TypeScript
+- Expo Router
+- React Native Reanimated
+- React Native Gesture Handler where useful
+- Expo Haptics
+- Expo Audio for local audio
+- AsyncStorage only if local persistence is required
 
 Use modern React Native best practices.
 
@@ -92,15 +92,15 @@ The application must be completely backend-free.
 
 DO NOT use:
 
-* Firebase
-* Supabase
-* REST APIs
-* GraphQL
-* External databases
-* Authentication servers
-* Cloud storage
-* Remote CMS
-* External backend services
+- Firebase
+- Supabase
+- REST APIs
+- GraphQL
+- External databases
+- Authentication servers
+- Cloud storage
+- Remote CMS
+- External backend services
 
 The app must work completely offline after installation.
 
@@ -108,16 +108,16 @@ All content must be local.
 
 Local content may include:
 
-* Images
-* Videos if practical
-* Audio
-* Love letters
-* Memories
-* Timeline events
-* Surprise messages
-* Quiz questions
-* Secret messages
-* Anniversary dates
+- Images
+- Videos if practical
+- Audio
+- Love letters
+- Memories
+- Timeline events
+- Surprise messages
+- Quiz questions
+- Secret messages
+- Anniversary dates
 
 Use local JSON/data files for structured content.
 
@@ -129,8 +129,8 @@ Use local assets for media.
 
 The app will NOT be published to:
 
-* Google Play Store
-* Apple App Store
+- Google Play Store
+- Apple App Store
 
 The final application must be installable as an Android APK.
 
@@ -154,28 +154,28 @@ The app should feel like it was created personally by her husband.
 
 The experience should be:
 
-* Romantic
-* Elegant
-* Emotional
-* Intimate
-* Playful
-* Mysterious
-* Premium
-* Smooth
-* Cinematic
-* Personal
+- Romantic
+- Elegant
+- Emotional
+- Intimate
+- Playful
+- Mysterious
+- Premium
+- Smooth
+- Cinematic
+- Personal
 
 Avoid:
 
-* Cheap-looking UI
-* Excessive pink colors
-* Generic Valentine's Day design
-* Overuse of hearts everywhere
-* Generic stock photos
-* Excessive text on every screen
-* Cluttered layouts
-* Standard CRUD-style screens
-* Boring navigation
+- Cheap-looking UI
+- Excessive pink colors
+- Generic Valentine's Day design
+- Overuse of hearts everywhere
+- Generic stock photos
+- Excessive text on every screen
+- Cluttered layouts
+- Standard CRUD-style screens
+- Boring navigation
 
 Use tasteful romantic visual design.
 
@@ -189,21 +189,21 @@ Use a premium visual language.
 
 Suggested design characteristics:
 
-* Deep dark backgrounds
-* Warm gradients
-* Soft glow
-* Subtle glassmorphism
-* Elegant typography
-* Large emotional typography
-* Smooth transitions
-* Soft shadows
-* Cinematic overlays
-* Gentle particle effects
-* Floating elements
-* Subtle heart animations
-* Haptic feedback
-* Carefully timed reveals
-* High-quality image presentation (proper aspect ratios, no stretching/cropping artifacts, deliberate framing)
+- Deep dark backgrounds
+- Warm gradients
+- Soft glow
+- Subtle glassmorphism
+- Elegant typography
+- Large emotional typography
+- Smooth transitions
+- Soft shadows
+- Cinematic overlays
+- Gentle particle effects
+- Floating elements
+- Subtle heart animations
+- Haptic feedback
+- Carefully timed reveals
+- High-quality image presentation (proper aspect ratios, no stretching/cropping artifacts, deliberate framing)
 
 Do not over-animate everything.
 
@@ -221,13 +221,13 @@ Use a sophisticated romantic palette.
 
 Primary direction:
 
-* Deep black
-* Midnight tones
-* Burgundy
-* Deep red
-* Warm cream
-* Soft gold
-* Subtle pink accents
+- Deep black
+- Midnight tones
+- Burgundy
+- Deep red
+- Warm cream
+- Soft gold
+- Subtle pink accents
 
 Do not make the entire application bright pink.
 
@@ -241,9 +241,9 @@ The visual style should feel like:
 
 Use a combination of:
 
-* Elegant serif font for emotional headings
-* Clean modern sans-serif for body text
-* Script/cursive font only for special moments
+- Elegant serif font for emotional headings
+- Clean modern sans-serif for body text
+- Script/cursive font only for special moments
 
 Do not use decorative fonts excessively.
 
@@ -335,10 +335,10 @@ It should feel like the entrance to a private world.
 
 Top section:
 
-* Wife's name
-* Personal greeting
-* Current date
-* Subtle animated background
+- Wife's name
+- Personal greeting
+- Current date
+- Subtle animated background
 
 Example:
 
@@ -370,11 +370,11 @@ Use a simple navigation structure.
 
 Suggested sections:
 
-* Home
-* Our Story
-* Memories
-* Letters
-* More
+- Home
+- Our Story
+- Memories
+- Letters
+- More
 
 Do not expose every feature on the first screen.
 
@@ -390,35 +390,35 @@ Create an interactive relationship timeline.
 
 Possible events:
 
-* The day we met
-* Our first conversation
-* Our first special moment
-* Our first date
-* The day we became closer
-* Our engagement
-* Our wedding
-* Our first trip
-* Important memories
-* Today
+- The day we met
+- Our first conversation
+- Our first special moment
+- Our first date
+- The day we became closer
+- Our engagement
+- Our wedding
+- Our first trip
+- Important memories
+- Today
 
 Each timeline item supports:
 
-* Date
-* Title
-* Photo
-* Description
-* Optional audio
-* Optional secret content
+- Date
+- Title
+- Photo
+- Description
+- Optional audio
+- Optional secret content
 
 Use scroll-based animations.
 
 As the user scrolls:
 
-* Images reveal gradually
-* Timeline line animates
-* Cards fade in
-* Photos move subtly
-* Haptic feedback may occur at important moments
+- Images reveal gradually
+- Timeline line animates
+- Cards fade in
+- Photos move subtly
+- Haptic feedback may occur at important moments
 
 The timeline should feel like traveling through time.
 
@@ -432,18 +432,18 @@ Do not make it look like a standard photo grid.
 
 Use different presentation styles:
 
-* Polaroid cards
-* Full-screen photo stories
-* Horizontal memory carousel
-* Cinematic photo reveal
+- Polaroid cards
+- Full-screen photo stories
+- Horizontal memory carousel
+- Cinematic photo reveal
 
 Each memory may include:
 
-* Photo
-* Date
-* Location
-* Title
-* Personal caption
+- Photo
+- Date
+- Location
+- Title
+- Personal caption
 
 Example:
 
@@ -463,13 +463,13 @@ Create an "Open When..." experience.
 
 Cards:
 
-* Open when you miss me
-* Open when you are sad
-* Open when you are angry with me
-* Open when you need a hug
-* Open when you can't sleep
-* Open when you feel alone
-* Open when you want to know how much I love you
+- Open when you miss me
+- Open when you are sad
+- Open when you are angry with me
+- Open when you need a hug
+- Open when you can't sleep
+- Open when you feel alone
+- Open when you want to know how much I love you
 
 The letters should not open instantly.
 
@@ -486,9 +486,9 @@ Example:
 
 Optional:
 
-* Haptic feedback
-* Soft background music
-* Ambient animation
+- Haptic feedback
+- Soft background music
+- Ambient animation
 
 ---
 
@@ -544,12 +544,12 @@ Every day, show a different message.
 
 Examples:
 
-* Romantic messages
-* Memories
-* Photos
-* Compliments
-* Small jokes
-* Relationship memories
+- Romantic messages
+- Memories
+- Photos
+- Compliments
+- Small jokes
+- Relationship memories
 
 All content must be stored locally.
 
@@ -575,10 +575,10 @@ Create a beautiful countdown.
 
 Display:
 
-* Days
-* Hours
-* Minutes
-* Seconds
+- Days
+- Hours
+- Minutes
+- Seconds
 
 Example:
 
@@ -598,11 +598,11 @@ Example:
 
 Then trigger:
 
-* Confetti
-* Hearts
-* Music
-* Special message
-* Memory slideshow
+- Confetti
+- Hearts
+- Music
+- Special message
+- Memory slideshow
 
 ---
 
@@ -614,10 +614,10 @@ Show places we have visited.
 
 Each place can include:
 
-* Location name
-* Photo
-* Date
-* Story
+- Location name
+- Photo
+- Date
+- Story
 
 The first version may use a stylized visual map instead of a real online map.
 
@@ -641,9 +641,9 @@ Use local audio files bundled with the app.
 
 Each song includes:
 
-* Title
-* Artist
-* Personal reason
+- Title
+- Artist
+- Personal reason
 
 Example:
 
@@ -667,11 +667,11 @@ Questions should be personal.
 
 Examples:
 
-* Where did we first meet?
-* What was our first trip?
-* What food do I love?
-* What is one thing I always say?
-* What is my favourite memory with you?
+- Where did we first meet?
+- What was our first trip?
+- What food do I love?
+- What is one thing I always say?
+- What is my favourite memory with you?
 
 After each answer:
 
@@ -697,20 +697,20 @@ The app should have hidden surprises.
 
 Examples:
 
-* Long press on a photo
-* Tap a specific heart
-* Swipe a memory in a special direction
-* Tap the date multiple times
-* Shake device if practical
-* Hidden secret card
+- Long press on a photo
+- Tap a specific heart
+- Swipe a memory in a special direction
+- Tap the date multiple times
+- Shake device if practical
+- Hidden secret card
 
 Each discovery can unlock:
 
-* Secret message
-* Extra photo
-* Voice message
-* Special animation
-* Hidden letter
+- Secret message
+- Extra photo
+- Voice message
+- Special animation
+- Hidden letter
 
 Do not make all secrets obvious.
 
@@ -734,12 +734,12 @@ The user should gradually discover the app — do not expose every feature immed
 
 The Final Surprise should be:
 
-* Deeply personal
-* Emotional
-* Cinematic
-* Memorable
-* Unexpected
-* Beautiful
+- Deeply personal
+- Emotional
+- Cinematic
+- Memorable
+- Unexpected
+- Beautiful
 
 The application should have a final emotional destination.
 
@@ -795,10 +795,10 @@ Example:
 
 ```ts
 export const APP_CONFIG = {
-  wifeName: "Nabila",
-  husbandName: "Sakib",
-  relationshipStartDate: "YYYY-MM-DD",
-  anniversaryDate: "YYYY-MM-DD",
+  wifeName: 'Nabila',
+  husbandName: 'Sakib',
+  relationshipStartDate: 'YYYY-MM-DD',
+  anniversaryDate: 'YYYY-MM-DD',
 };
 ```
 
@@ -935,14 +935,14 @@ The app must be smooth.
 
 Target:
 
-* 60 FPS animations where possible
-* Fast startup
-* Optimized images
-* Lazy rendering for large memory collections
-* Avoid unnecessary re-renders
-* Use memoization where useful
-* Avoid memory leaks
-* Avoid excessive animations simultaneously
+- 60 FPS animations where possible
+- Fast startup
+- Optimized images
+- Lazy rendering for large memory collections
+- Avoid unnecessary re-renders
+- Use memoization where useful
+- Avoid memory leaks
+- Avoid excessive animations simultaneously
 
 The app must run well on a normal Android phone.
 
@@ -952,11 +952,11 @@ The app must run well on a normal Android phone.
 
 Support:
 
-* Readable text
-* Good contrast
-* Touch-friendly buttons
-* Accessible labels
-* Reduced motion consideration where practical
+- Readable text
+- Good contrast
+- Touch-friendly buttons
+- Accessible labels
+- Reduced motion consideration where practical
 
 ---
 
@@ -964,10 +964,10 @@ Support:
 
 The app should not crash if:
 
-* A local image is missing
-* Audio cannot play
-* A memory entry is incomplete
-* A date is invalid
+- A local image is missing
+- Audio cannot play
+- A memory entry is incomplete
+- A date is invalid
 
 Use graceful fallbacks.
 
@@ -977,9 +977,9 @@ Use graceful fallbacks.
 
 After installation, the app must be fully usable with:
 
-* Wi-Fi OFF
-* Mobile data OFF
-* Airplane mode ON
+- Wi-Fi OFF
+- Mobile data OFF
+- Airplane mode ON
 
 Do not depend on remote images.
 
@@ -1025,14 +1025,14 @@ Do not skip phases.
 
 Tasks:
 
-* Create Expo React Native TypeScript project.
-* Configure Expo Router.
-* Configure ESLint.
-* Configure Prettier.
-* Create folder structure.
-* Create theme constants.
-* Create centralized app configuration.
-* Verify the project runs successfully.
+- Create Expo React Native TypeScript project.
+- Configure Expo Router.
+- Configure ESLint.
+- Configure Prettier.
+- Create folder structure.
+- Create theme constants.
+- Create centralized app configuration.
+- Verify the project runs successfully.
 
 Deliverable:
 
@@ -1044,15 +1044,15 @@ A clean working Expo application.
 
 Implement:
 
-* Color system
-* Typography
-* Spacing
-* Shadows
-* Border radius
-* Animation constants
-* Reusable buttons
-* Reusable cards
-* Screen container
+- Color system
+- Typography
+- Spacing
+- Shadows
+- Border radius
+- Animation constants
+- Reusable buttons
+- Reusable cards
+- Screen container
 
 Deliverable:
 
@@ -1066,12 +1066,12 @@ Implement the complete first-launch experience.
 
 Include:
 
-* Dark intro
-* Animated text
-* Wife's name
-* Personal messages
-* Photo reveal
-* Smooth transition to Home
+- Dark intro
+- Animated text
+- Wife's name
+- Personal messages
+- Photo reveal
+- Smooth transition to Home
 
 The intro should feel cinematic.
 
@@ -1085,11 +1085,11 @@ A WOW first-launch experience.
 
 Implement:
 
-* Personal greeting
-* Featured memory
-* Daily surprise preview
-* Navigation
-* Animated background
+- Personal greeting
+- Featured memory
+- Daily surprise preview
+- Navigation
+- Animated background
 
 Deliverable:
 
@@ -1101,11 +1101,11 @@ A premium Home experience.
 
 Implement:
 
-* Timeline
-* Scroll animations
-* Photos
-* Personal stories
-* Timeline details
+- Timeline
+- Scroll animations
+- Photos
+- Personal stories
+- Timeline details
 
 Deliverable:
 
@@ -1117,11 +1117,11 @@ An emotional interactive relationship timeline.
 
 Implement:
 
-* Memory gallery
-* Memory cards
-* Full-screen viewer
-* Captions
-* Animations
+- Memory gallery
+- Memory cards
+- Full-screen viewer
+- Captions
+- Animations
 
 Deliverable:
 
@@ -1133,11 +1133,11 @@ A beautiful memory experience.
 
 Implement:
 
-* Open When cards
-* Envelope animation
-* Letter opening animation
-* Animated text
-* Haptic feedback
+- Open When cards
+- Envelope animation
+- Letter opening animation
+- Animated text
+- Haptic feedback
 
 Deliverable:
 
@@ -1149,11 +1149,11 @@ A deeply personal letter experience.
 
 Implement:
 
-* Local date detection
-* Daily message system
-* Daily memory
-* Daily photo
-* Daily surprise animation
+- Local date detection
+- Daily message system
+- Daily memory
+- Daily photo
+- Daily surprise animation
 
 Deliverable:
 
@@ -1165,11 +1165,11 @@ A new surprise every day.
 
 Implement:
 
-* Hidden interactions
-* Secret section
-* Password/date unlock
-* Secret letter
-* Special animations
+- Hidden interactions
+- Secret section
+- Password/date unlock
+- Secret letter
+- Special animations
 
 Deliverable:
 
@@ -1181,11 +1181,11 @@ A discoverable secret layer.
 
 Implement:
 
-* Personal questions
-* Answer selection
-* Feedback animations
-* Score
-* Final result
+- Personal questions
+- Answer selection
+- Feedback animations
+- Score
+- Final result
 
 Deliverable:
 
@@ -1197,11 +1197,11 @@ A fun interactive experience.
 
 Implement:
 
-* Local audio
-* Play/pause
-* Progress
-* Animated artwork
-* Personal descriptions
+- Local audio
+- Play/pause
+- Progress
+- Animated artwork
+- Personal descriptions
 
 Deliverable:
 
@@ -1213,11 +1213,11 @@ Offline music experience.
 
 Implement:
 
-* Countdown
-* Anniversary detection
-* Special anniversary experience
-* Confetti
-* Special message
+- Countdown
+- Anniversary detection
+- Special anniversary experience
+- Confetti
+- Special message
 
 Deliverable:
 
@@ -1243,24 +1243,24 @@ Review the entire application.
 
 Improve:
 
-* Animations
-* Transitions
-* Haptic feedback
-* Typography
-* Spacing
-* Loading states
-* Empty states
-* Error handling
-* Performance
-* Accessibility
+- Animations
+- Transitions
+- Haptic feedback
+- Typography
+- Spacing
+- Loading states
+- Empty states
+- Error handling
+- Performance
+- Accessibility
 
 Remove:
 
-* Unnecessary UI
-* Duplicate components
-* Unused code
-* Debug logs
-* Placeholder content where possible
+- Unnecessary UI
+- Duplicate components
+- Unused code
+- Debug logs
+- Placeholder content where possible
 
 Deliverable:
 
@@ -1272,21 +1272,21 @@ Production-quality polished application.
 
 Test the application with:
 
-* Wi-Fi disabled
-* Mobile data disabled
-* Airplane mode enabled
+- Wi-Fi disabled
+- Mobile data disabled
+- Airplane mode enabled
 
 Verify:
 
-* All screens open
-* All navigation works
-* Images load
-* Audio works
-* Letters open
-* Quiz works
-* Countdown works
-* Secret section works
-* Daily surprise works
+- All screens open
+- All navigation works
+- Images load
+- Audio works
+- Letters open
+- Quiz works
+- Countdown works
+- Secret section works
+- Daily surprise works
 
 No network dependency should exist.
 
@@ -1300,12 +1300,12 @@ Generate a standalone APK.
 
 Verify:
 
-* APK installs successfully
-* App launches successfully
-* App works offline
-* No development server is required
-* No Expo Go is required for the final APK
-* No backend is required
+- APK installs successfully
+- App launches successfully
+- App works offline
+- No development server is required
+- No Expo Go is required for the final APK
+- No backend is required
 
 Provide clear instructions for:
 
@@ -1337,19 +1337,19 @@ Work phase-by-phase.
 
 Before starting each phase, explain:
 
-* What you will build.
-* Which files you will create/change.
-* Why the implementation is designed this way.
+- What you will build.
+- Which files you will create/change.
+- Why the implementation is designed this way.
 
 ### Rule 5
 
 After each phase:
 
-* Run checks.
-* Fix errors.
-* Verify functionality.
-* Verify the UI visually using the Android Emulator (or a connected device) — confirm it looks right, not only that it runs.
-* Report a concise summary of what was built and wait for confirmation before starting the next major phase (e.g. before moving between the numbered phases in Section 31). Small fixes within an already-approved phase don't need a fresh confirmation.
+- Run checks.
+- Fix errors.
+- Verify functionality.
+- Verify the UI visually using the Android Emulator (or a connected device) — confirm it looks right, not only that it runs.
+- Report a concise summary of what was built and wait for confirmation before starting the next major phase (e.g. before moving between the numbered phases in Section 31). Small fixes within an already-approved phase don't need a fresh confirmation.
 
 ### Rule 6
 
@@ -1413,12 +1413,12 @@ Before declaring the project complete, ask:
 
 If the answer is no:
 
-* Improve the animations.
-* Improve the storytelling.
-* Improve the transitions.
-* Improve the emotional pacing.
-* Improve the personalization.
-* Improve the visual design.
+- Improve the animations.
+- Improve the storytelling.
+- Improve the transitions.
+- Improve the emotional pacing.
+- Improve the personalization.
+- Improve the visual design.
 
 The final product should create this feeling:
 
@@ -1474,8 +1474,8 @@ The language choice should depend on the purpose of the content.
 
 The goal is to combine:
 
-* English for a premium, modern, cinematic UI experience.
-* Bangla for emotional, personal, intimate, and deeply meaningful content.
+- English for a premium, modern, cinematic UI experience.
+- Bangla for emotional, personal, intimate, and deeply meaningful content.
 
 Do NOT translate everything into English.
 
@@ -1491,30 +1491,30 @@ The main application UI should primarily use English.
 
 Use English for:
 
-* Navigation labels
-* Tab names
-* Button labels
-* Feature names
-* Section headings
-* Settings
-* Actions
-* General UI elements
+- Navigation labels
+- Tab names
+- Button labels
+- Feature names
+- Section headings
+- Settings
+- Actions
+- General UI elements
 
 Examples:
 
-* Home
-* Our Story
-* Memories
-* Love Letters
-* Secret
-* Our Songs
-* Daily Surprise
-* Discover Memory
-* Open Letter
-* Read Our Story
-* Unlock Secret
-* Play Our Song
-* Replay
+- Home
+- Our Story
+- Memories
+- Love Letters
+- Secret
+- Our Songs
+- Daily Surprise
+- Discover Memory
+- Open Letter
+- Read Our Story
+- Unlock Secret
+- Play Our Song
+- Replay
 
 The UI should feel clean, modern, premium, and internationally designed.
 
@@ -1562,11 +1562,11 @@ Do not show too much text at once.
 
 Use:
 
-* Fade-in
-* Fade-out
-* Typewriter effects
-* Carefully timed pauses
-* Cinematic transitions
+- Fade-in
+- Fade-out
+- Typewriter effects
+- Carefully timed pauses
+- Cinematic transitions
 
 The language transitions should feel natural.
 
@@ -1578,16 +1578,16 @@ The most personal content should primarily be written in Bangla.
 
 Use Bangla for:
 
-* Love letters
-* Secret letters
-* Personal memories
-* Emotional messages
-* Daily romantic messages
-* Relationship stories
-* Personal captions
-* Deeply emotional moments
-* Voice message descriptions
-* Final emotional message
+- Love letters
+- Secret letters
+- Personal memories
+- Emotional messages
+- Daily romantic messages
+- Relationship stories
+- Personal captions
+- Deeply emotional moments
+- Voice message descriptions
+- Final emotional message
 
 The goal is to make these sections feel like they were genuinely written by her husband.
 
@@ -1629,15 +1629,15 @@ Use this pattern where appropriate:
 
 English:
 
-* Short title
-* Date
-* Location
+- Short title
+- Date
+- Location
 
 Bangla:
 
-* Personal story
-* Emotional caption
-* Memory description
+- Personal story
+- Emotional caption
+- Memory description
 
 ---
 
@@ -1719,12 +1719,12 @@ Mixing Bangla and English naturally is encouraged when it sounds like real every
 
 The quiz interface should use English for UI elements:
 
-* Question
-* Next
-* Score
-* Correct
-* Try Again
-* Final Result
+- Question
+- Next
+- Score
+- Correct
+- Try Again
+- Final Result
 
 But personal questions should primarily be in Bangla.
 
@@ -1821,10 +1821,10 @@ Example:
 
 ```ts
 export const APP_CONFIG = {
-  wifeName: "Nabila",
-  husbandName: "Sakib",
-  relationshipStartDate: "YYYY-MM-DD",
-  anniversaryDate: "YYYY-MM-DD",
+  wifeName: 'Nabila',
+  husbandName: 'Sakib',
+  relationshipStartDate: 'YYYY-MM-DD',
+  anniversaryDate: 'YYYY-MM-DD',
 };
 ```
 
@@ -1832,17 +1832,17 @@ All personal Bangla content should be easy to edit.
 
 I should be able to replace:
 
-* Wife's name
-* My name
-* Relationship dates
-* Memories
-* Personal stories
-* Love letters
-* Secret message
-* Daily surprises
-* Quiz questions
-* Song descriptions
-* Final message
+- Wife's name
+- My name
+- Relationship dates
+- Memories
+- Personal stories
+- Love letters
+- Secret message
+- Daily surprises
+- Quiz questions
+- Song descriptions
+- Final message
 
 without changing the UI components.
 
@@ -1852,24 +1852,24 @@ without changing the UI components.
 
 For Bangla content:
 
-* Use natural Bangla.
-* Prefer conversational Bangla.
-* Avoid overly formal literary Bangla.
-* Avoid awkward machine-translated Bangla.
-* Avoid unnecessary English words.
-* Use English words naturally when they are commonly used in everyday Bangla conversation.
-* Keep spelling consistent.
-* Use Bangla punctuation where appropriate.
-* Maintain emotional authenticity.
+- Use natural Bangla.
+- Prefer conversational Bangla.
+- Avoid overly formal literary Bangla.
+- Avoid awkward machine-translated Bangla.
+- Avoid unnecessary English words.
+- Use English words naturally when they are commonly used in everyday Bangla conversation.
+- Keep spelling consistent.
+- Use Bangla punctuation where appropriate.
+- Maintain emotional authenticity.
 
 For English content:
 
-* Keep sentences short.
-* Use elegant and cinematic wording.
-* Avoid clichés.
-* Avoid generic AI-generated romantic quotes.
-* Use minimal text.
-* Prioritize emotional impact over quantity.
+- Keep sentences short.
+- Use elegant and cinematic wording.
+- Avoid clichés.
+- Avoid generic AI-generated romantic quotes.
+- Use minimal text.
+- Prioritize emotional impact over quantity.
 
 ---
 

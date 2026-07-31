@@ -1,4 +1,5 @@
 import { Directory, File, Paths } from 'expo-file-system';
+import { Platform } from 'react-native';
 
 import { STARTER_STORY_EVENTS } from '@/data/story';
 import type { TimelineEvent } from '@/types';
@@ -15,7 +16,16 @@ function getStoryPhotosDirectory(): Directory {
   return directory;
 }
 
+/**
+ * `expo-file-system` is a no-op stub on web — there the picked URI (a
+ * blob: URL) is used as-is instead of being copied into permanent storage.
+ * It won't survive a page refresh, but that's a browser limitation, not
+ * something worth crashing the save over.
+ */
 async function persistPickedPhoto(pickedUri: string, eventId: string): Promise<string> {
+  if (Platform.OS === 'web') {
+    return pickedUri;
+  }
   const source = new File(pickedUri);
   const extension = source.extension || '.jpg';
   const destination = new File(getStoryPhotosDirectory(), `${eventId}-${Date.now()}${extension}`);
@@ -87,7 +97,13 @@ export async function updateStoryEventPhoto(id: string, pickedUri: string | null
   const event = existing.find((item) => item.id === id);
   if (!event) return;
 
-  if (event.photo && typeof event.photo === 'object' && 'uri' in event.photo && event.photo.uri) {
+  if (
+    Platform.OS !== 'web' &&
+    event.photo &&
+    typeof event.photo === 'object' &&
+    'uri' in event.photo &&
+    event.photo.uri
+  ) {
     try {
       new File(event.photo.uri).delete();
     } catch {
@@ -106,7 +122,13 @@ export async function deleteStoryEvent(id: string): Promise<void> {
   const remaining = existing.filter((event) => event.id !== id);
   await saveStoryEvents(remaining);
 
-  if (target?.photo && typeof target.photo === 'object' && 'uri' in target.photo && target.photo.uri) {
+  if (
+    Platform.OS !== 'web' &&
+    target?.photo &&
+    typeof target.photo === 'object' &&
+    'uri' in target.photo &&
+    target.photo.uri
+  ) {
     try {
       new File(target.photo.uri).delete();
     } catch {

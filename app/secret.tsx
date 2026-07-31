@@ -1,22 +1,31 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
-import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { AnimatedText } from '@/components/AnimatedText';
 import { Button } from '@/components/Button';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { SecretReveal } from '@/components/SecretReveal';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useSecretLetter } from '@/hooks/useSecretLetter';
+import { goBack } from '@/utils/navigation';
 import { checkSecretUnlock } from '@/utils/secretUnlock';
 
 type Stage = 'discovery' | 'unlock' | 'revealed';
 
 export default function Secret() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { content } = useSecretLetter();
   const [stage, setStage] = useState<Stage>('discovery');
   const [input, setInput] = useState('');
@@ -51,7 +60,7 @@ export default function Secret() {
 
   return (
     <ScreenContainer style={styles.container}>
-      <Pressable style={styles.back} onPress={() => router.back()} hitSlop={12}>
+      <Pressable style={styles.back} onPress={() => goBack()} hitSlop={12}>
         <Text style={styles.backText}>Close</Text>
       </Pressable>
 
@@ -89,61 +98,62 @@ export default function Secret() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  back: {
-    position: 'absolute',
-    top: spacing.xl,
-    right: spacing.lg,
-    zIndex: 1,
-  },
-  backText: {
-    fontFamily: fontFamily.sansMedium,
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  discoveryText: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.xl,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  unlockBlock: {
-    alignItems: 'center',
-    gap: spacing.md,
-    width: '100%',
-  },
-  prompt: {
-    fontFamily: fontFamily.banglaSerifMedium,
-    fontSize: fontSize.lg,
-    color: colors.cream,
-    textAlign: 'center',
-  },
-  input: {
-    width: '100%',
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.md,
-    color: colors.cream,
-    textAlign: 'center',
-  },
-  wrongText: {
-    fontFamily: fontFamily.banglaRegular,
-    fontSize: fontSize.sm,
-    color: colors.pinkAccent,
-  },
-  submitButton: {
-    marginTop: spacing.sm,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    back: {
+      position: 'absolute',
+      top: spacing.xl,
+      right: spacing.lg,
+      zIndex: 1,
+    },
+    backText: {
+      fontFamily: fontFamily.sansMedium,
+      fontSize: fontSize.sm,
+      color: colors.textMuted,
+    },
+    center: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.xl,
+    },
+    discoveryText: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.xl,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+    unlockBlock: {
+      alignItems: 'center',
+      gap: spacing.md,
+      width: '100%',
+    },
+    prompt: {
+      fontFamily: fontFamily.banglaSerifMedium,
+      fontSize: fontSize.lg,
+      color: colors.cream,
+      textAlign: 'center',
+    },
+    input: {
+      width: '100%',
+      backgroundColor: colors.surface,
+      borderRadius: 12,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.md,
+      color: colors.cream,
+      textAlign: 'center',
+    },
+    wrongText: {
+      fontFamily: fontFamily.banglaRegular,
+      fontSize: fontSize.sm,
+      color: colors.pinkAccent,
+    },
+    submitButton: {
+      marginTop: spacing.sm,
+    },
+  });

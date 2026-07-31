@@ -13,16 +13,16 @@ Native, and TypeScript. No backend, no accounts, no internet required. See
 All personal content lives in `data/`, separate from the UI. Nothing here
 requires touching component code.
 
-| File | What to fill in |
-|---|---|
-| `data/appConfig.ts` | Names and `relationshipStartDate` / `anniversaryDate` (replace the `TODO_` placeholders, format `YYYY-MM-DD`) |
-| `data/story.ts` | Our Story timeline — date/description per milestone |
-| `data/memories.ts` | The starter "demo" memory shown before you add real ones |
-| `data/letters.ts` | The body of each "Open When..." letter |
-| `data/secret.ts` | The Secret Letter's real message |
-| `data/quiz.ts` | Quiz options — remember to update `correctIndex` for each question |
-| `data/songs.ts` | Song title/artist/reason; add the audio file under `assets/audio/songs/` and set `audioAsset: require('@/assets/audio/songs/your-file.mp3')` |
-| `data/finalMessage.ts` | The Final Surprise closing message |
+| File                   | What to fill in                                                                                                                              |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data/appConfig.ts`    | Names and `relationshipStartDate` / `anniversaryDate` (replace the `TODO_` placeholders, format `YYYY-MM-DD`)                                |
+| `data/story.ts`        | Our Story timeline — date/description per milestone                                                                                          |
+| `data/memories.ts`     | The starter "demo" memory shown before you add real ones                                                                                     |
+| `data/letters.ts`      | The body of each "Open When..." letter                                                                                                       |
+| `data/secret.ts`       | The Secret Letter's real message                                                                                                             |
+| `data/quiz.ts`         | Quiz options — remember to update `correctIndex` for each question                                                                           |
+| `data/songs.ts`        | Song title/artist/reason; add the audio file under `assets/audio/songs/` and set `audioAsset: require('@/assets/audio/songs/your-file.mp3')` |
+| `data/finalMessage.ts` | The Final Surprise closing message                                                                                                           |
 
 **Real photos are never bundled into the app.** They're added on the phone
 itself: Memory Vault → **+** → pick photos from the system picker → fill in
@@ -56,19 +56,23 @@ npm run lint        # ESLint
 
 This project builds via **EAS Build** (Expo's cloud build service) rather
 than a local Android SDK install — the app itself is fully offline at
-runtime; only the *build step* touches the network.
+runtime; only the _build step_ touches the network.
 
 1. **One-time setup:**
+
    ```bash
    npx eas-cli login
    ```
+
    (Creates/uses a free Expo account — needed only to trigger builds, not
    used by the app itself.)
 
 2. **Build the APK:**
+
    ```bash
    npx eas-cli build --platform android --profile apk
    ```
+
    This uploads the project, builds it in Expo's cloud, and gives you a
    download link when done (also visible at expo.dev under your account).
 

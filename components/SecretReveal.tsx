@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { AmbientGlow } from '@/components/AmbientGlow';
 import { AnimatedText } from '@/components/AnimatedText';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import { useSecretLetter } from '@/hooks/useSecretLetter';
@@ -18,6 +25,8 @@ type Props = {
 
 /** Post-unlock reveal of the Secret Letter (SPEC.md Section 15). */
 export function SecretReveal({ onEdit }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { content } = useSecretLetter();
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(false);
@@ -29,19 +38,31 @@ export function SecretReveal({ onEdit }: Props) {
       {
         id: 'opening',
         text: content.opening,
-        style: { fontFamily: fontFamily.banglaSerifMedium, fontSize: fontSize.lg, color: colors.cream },
+        style: {
+          fontFamily: fontFamily.banglaSerifMedium,
+          fontSize: fontSize.lg,
+          color: colors.cream,
+        },
         hold: 2200,
       },
       {
         id: 'body',
         text: content.body,
-        style: { fontFamily: fontFamily.banglaRegular, fontSize: fontSize.md, color: colors.textSecondary },
+        style: {
+          fontFamily: fontFamily.banglaRegular,
+          fontSize: fontSize.md,
+          color: colors.textSecondary,
+        },
         hold: 2600,
       },
       {
         id: 'closing-bn',
         text: content.closingBangla,
-        style: { fontFamily: fontFamily.banglaSerifMedium, fontSize: fontSize.lg, color: colors.pinkAccent },
+        style: {
+          fontFamily: fontFamily.banglaSerifMedium,
+          fontSize: fontSize.lg,
+          color: colors.pinkAccent,
+        },
         hold: 2600,
       },
       {
@@ -51,7 +72,7 @@ export function SecretReveal({ onEdit }: Props) {
         hold: 2000,
       },
     ],
-    [content],
+    [content, colors],
   );
 
   const clearTimer = () => {
@@ -78,7 +99,11 @@ export function SecretReveal({ onEdit }: Props) {
   useEffect(() => {
     if (done) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      pulse.value = withRepeat(withTiming(1, { duration: 1600, easing: Easing.inOut(Easing.sin) }), -1, true);
+      pulse.value = withRepeat(
+        withTiming(1, { duration: 1600, easing: Easing.inOut(Easing.sin) }),
+        -1,
+        true,
+      );
     }
   }, [done, pulse]);
 
@@ -109,7 +134,9 @@ export function SecretReveal({ onEdit }: Props) {
         ) : null}
         {done ? (
           <View style={styles.doneBlock}>
-            <Animated.Text style={[styles.text, styles.final, finalStyle]}>{content.final}</Animated.Text>
+            <Animated.Text style={[styles.text, styles.final, finalStyle]}>
+              {content.final}
+            </Animated.Text>
             <Pressable onPress={onEdit} hitSlop={12}>
               <Text style={styles.editLink}>Edit this letter</Text>
             </Pressable>
@@ -120,34 +147,35 @@ export function SecretReveal({ onEdit }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-  },
-  text: {
-    textAlign: 'center',
-  },
-  final: {
-    fontFamily: fontFamily.script,
-    fontSize: fontSize.display,
-    color: colors.gold,
-  },
-  doneBlock: {
-    alignItems: 'center',
-    gap: spacing.xl,
-  },
-  editLink: {
-    fontFamily: fontFamily.sansMedium,
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    center: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: spacing.xl,
+    },
+    text: {
+      textAlign: 'center',
+    },
+    final: {
+      fontFamily: fontFamily.script,
+      fontSize: fontSize.display,
+      color: colors.gold,
+    },
+    doneBlock: {
+      alignItems: 'center',
+      gap: spacing.xl,
+    },
+    editLink: {
+      fontFamily: fontFamily.sansMedium,
+      fontSize: fontSize.sm,
+      color: colors.textMuted,
+      letterSpacing: 1,
+      textTransform: 'uppercase',
+    },
+  });

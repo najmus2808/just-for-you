@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
@@ -13,7 +13,8 @@ import Animated, {
 
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import type { Song } from '@/types';
@@ -33,6 +34,8 @@ function formatTime(seconds: number): string {
 
 /** A minimal, beautiful offline player — one per song (SPEC.md Section 19). */
 export function MusicPlayer({ song }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const player = useAudioPlayer(song.audioAsset ?? null);
   const status = useAudioPlayerStatus(player);
   const spin = useSharedValue(0);
@@ -107,73 +110,74 @@ export function MusicPlayer({ song }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    gap: spacing.sm,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
-  disc: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.midnight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-  },
-  info: {
-    flex: 1,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.md,
-    color: colors.cream,
-  },
-  artist: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-  },
-  playButton: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  progressRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  progressTrack: {
-    flex: 1,
-    height: 3,
-    borderRadius: radius.pill,
-    backgroundColor: colors.border,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: colors.gold,
-  },
-  time: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-  },
-  notLoaded: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-    fontStyle: 'italic',
-  },
-  reason: {
-    fontFamily: fontFamily.banglaRegular,
-    fontSize: fontSize.sm,
-    lineHeight: fontSize.sm * 1.6,
-    color: colors.textSecondary,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    card: {
+      gap: spacing.sm,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+    disc: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.midnight,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.border,
+    },
+    info: {
+      flex: 1,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.md,
+      color: colors.cream,
+    },
+    artist: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+    },
+    playButton: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+    },
+    progressRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    progressTrack: {
+      flex: 1,
+      height: 3,
+      borderRadius: radius.pill,
+      backgroundColor: colors.border,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: colors.gold,
+    },
+    time: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+    },
+    notLoaded: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+      fontStyle: 'italic',
+    },
+    reason: {
+      fontFamily: fontFamily.banglaRegular,
+      fontSize: fontSize.sm,
+      lineHeight: fontSize.sm * 1.6,
+      color: colors.textSecondary,
+    },
+  });

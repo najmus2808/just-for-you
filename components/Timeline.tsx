@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, type ViewToken } from 'react-native';
 
 import { TimelineItem } from '@/components/TimelineItem';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import type { TimelineEvent } from '@/types';
@@ -17,6 +18,8 @@ const VIEWABILITY_CONFIG = { itemVisiblePercentThreshold: 30 };
 
 /** Scroll-revealed relationship timeline (SPEC.md Section 12). */
 export function Timeline({ events, onEditEvent, onDeleteEvent }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -66,29 +69,32 @@ export function Timeline({ events, onEditEvent, onDeleteEvent }: Props) {
       ListHeaderComponent={
         <>
           <Text style={styles.title}>Our Story</Text>
-          <Text style={styles.subtitle}>Traveling back through everything that brought us here.</Text>
+          <Text style={styles.subtitle}>
+            Traveling back through everything that brought us here.
+          </Text>
         </>
       }
     />
   );
 }
 
-const styles = StyleSheet.create({
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.xxxl * 2,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.xl,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.xl,
+      paddingBottom: spacing.xxxl * 2,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginBottom: spacing.xs,
+    },
+    subtitle: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+      marginBottom: spacing.xl,
+    },
+  });

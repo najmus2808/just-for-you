@@ -1,12 +1,15 @@
+import { useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
+import { hexToRgba } from '@/utils/color';
 
 type Row = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -17,6 +20,9 @@ type Row = {
 };
 
 export default function More() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   const rows: Row[] = [
     {
       icon: 'sparkles-outline',
@@ -24,6 +30,14 @@ export default function More() {
       onPress: () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
         router.push('/replay-intro');
+      },
+    },
+    {
+      icon: 'color-palette-outline',
+      label: 'Theme',
+      onPress: () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+        router.push('/theme');
       },
     },
     {
@@ -35,14 +49,13 @@ export default function More() {
       },
     },
     {
-      icon: 'musical-notes-outline',
-      label: 'Our Songs',
+      icon: 'map-outline',
+      label: 'Places',
       onPress: () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-        router.push('/songs');
+        router.push('/places');
       },
     },
-    { icon: 'map-outline', label: 'Places', soon: true },
     {
       icon: 'help-circle-outline',
       label: 'How Well Do You Know Us?',
@@ -102,59 +115,60 @@ export default function More() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginBottom: spacing.lg,
-  },
-  list: {
-    gap: spacing.sm,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.md,
-    backgroundColor: colors.surface,
-  },
-  rowFeatured: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.gold,
-    backgroundColor: 'rgba(216, 178, 106, 0.08)',
-  },
-  rowPressed: {
-    opacity: 0.8,
-  },
-  rowDisabled: {
-    opacity: 0.55,
-  },
-  label: {
-    flex: 1,
-    fontFamily: fontFamily.sansMedium,
-    fontSize: fontSize.md,
-    color: colors.cream,
-  },
-  labelDisabled: {
-    color: colors.textSecondary,
-  },
-  badge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: radius.pill,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-  },
-  badgeText: {
-    fontFamily: fontFamily.sansMedium,
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.xl,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginBottom: spacing.lg,
+    },
+    list: {
+      gap: spacing.sm,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+      borderRadius: radius.md,
+      backgroundColor: colors.surface,
+    },
+    rowFeatured: {
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.gold,
+      backgroundColor: hexToRgba(colors.gold, 0.12),
+    },
+    rowPressed: {
+      opacity: 0.8,
+    },
+    rowDisabled: {
+      opacity: 0.55,
+    },
+    label: {
+      flex: 1,
+      fontFamily: fontFamily.sansMedium,
+      fontSize: fontSize.md,
+      color: colors.cream,
+    },
+    labelDisabled: {
+      color: colors.textSecondary,
+    },
+    badge: {
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      borderRadius: radius.pill,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.border,
+    },
+    badgeText: {
+      fontFamily: fontFamily.sansMedium,
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+    },
+  });

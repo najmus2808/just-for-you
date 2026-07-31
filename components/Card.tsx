@@ -1,9 +1,12 @@
 import type { PropsWithChildren } from 'react';
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { shadows } from '@/constants/shadows';
+import { hexToRgba } from '@/utils/color';
 
 type Props = PropsWithChildren<{
   onPress?: () => void;
@@ -13,11 +16,10 @@ type Props = PropsWithChildren<{
 }>;
 
 export function Card({ children, onPress, style, variant = 'elevated' }: Props) {
-  const cardStyle = [
-    styles.base,
-    variant === 'elevated' ? styles.elevated : styles.glass,
-    style,
-  ];
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
+  const cardStyle = [styles.base, variant === 'elevated' ? styles.elevated : styles.glass, style];
 
   if (onPress) {
     return (
@@ -33,21 +35,22 @@ export function Card({ children, onPress, style, variant = 'elevated' }: Props) 
   return <View style={cardStyle}>{children}</View>;
 }
 
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-  },
-  elevated: {
-    backgroundColor: colors.surface,
-    ...shadows.card,
-  },
-  glass: {
-    backgroundColor: 'rgba(30, 26, 36, 0.55)',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    base: {
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+    },
+    elevated: {
+      backgroundColor: colors.surface,
+      ...shadows.card,
+    },
+    glass: {
+      backgroundColor: hexToRgba(colors.midnight, 0.55),
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.border,
+    },
+    pressed: {
+      opacity: 0.85,
+    },
+  });

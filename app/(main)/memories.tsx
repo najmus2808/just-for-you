@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
@@ -5,7 +6,8 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MemoryCard } from '@/components/MemoryCard';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { radius, spacing } from '@/constants/spacing';
 import { shadows } from '@/constants/shadows';
 import { fontFamily, fontSize } from '@/constants/typography';
@@ -14,6 +16,8 @@ import type { Memory } from '@/types';
 
 /** A private memory vault, not a stock photo grid (SPEC.md Section 13). */
 export default function Memories() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { memories, loading } = useMemories();
 
   const handleAdd = () => {
@@ -73,58 +77,59 @@ export default function Memories() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxxl * 2,
-  },
-  header: {
-    paddingTop: spacing.xl,
-    marginBottom: spacing.lg,
-  },
-  title: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xxl,
-    color: colors.gold,
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-  },
-  empty: {
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingTop: spacing.xxl,
-    paddingHorizontal: spacing.xl,
-  },
-  emptyText: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-  row: {
-    gap: spacing.md,
-  },
-  cell: {
-    flex: 1,
-    marginBottom: spacing.lg,
-  },
-  fab: {
-    position: 'absolute',
-    right: spacing.lg,
-    bottom: spacing.xxxl,
-    width: 56,
-    height: 56,
-    borderRadius: radius.pill,
-    backgroundColor: colors.gold,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...shadows.floating,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: spacing.lg,
+      paddingBottom: spacing.xxxl * 2,
+    },
+    header: {
+      paddingTop: spacing.xl,
+      marginBottom: spacing.lg,
+    },
+    title: {
+      fontFamily: fontFamily.serifSemiBold,
+      fontSize: fontSize.xxl,
+      color: colors.gold,
+      marginBottom: spacing.xs,
+    },
+    subtitle: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+    },
+    empty: {
+      alignItems: 'center',
+      gap: spacing.sm,
+      paddingTop: spacing.xxl,
+      paddingHorizontal: spacing.xl,
+    },
+    emptyText: {
+      fontFamily: fontFamily.sansRegular,
+      fontSize: fontSize.sm,
+      color: colors.textMuted,
+      textAlign: 'center',
+    },
+    row: {
+      gap: spacing.md,
+    },
+    cell: {
+      flex: 1,
+      marginBottom: spacing.lg,
+    },
+    fab: {
+      position: 'absolute',
+      right: spacing.lg,
+      bottom: spacing.xxxl,
+      width: 56,
+      height: 56,
+      borderRadius: radius.pill,
+      backgroundColor: colors.gold,
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...shadows.floating,
+    },
+  });

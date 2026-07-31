@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import Ionicons from '@expo/vector-icons/build/Ionicons';
-import * as Haptics from 'expo-haptics';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { AnimatedText } from '@/components/AnimatedText';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { fontFamily, fontSize } from '@/constants/typography';
 import type { Letter } from '@/types';
@@ -14,26 +13,10 @@ type Props = {
   letter: Letter;
 };
 
-/** Envelope-opening, line-by-line letter reveal (SPEC.md Section 14). */
+/** Line-by-line letter reveal — the envelope-opening gesture already happened on the card, so this shows the message straight away (SPEC.md Section 14). */
 export function LetterViewer({ letter }: Props) {
-  const [opened, setOpened] = useState(false);
-
-  const handleOpen = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
-    setOpened(true);
-  };
-
-  if (!opened) {
-    return (
-      <Pressable style={styles.envelopeScreen} onPress={handleOpen}>
-        <Animated.View exiting={FadeOut.duration(300)} style={styles.envelopeContent}>
-          <Ionicons name="mail" size={64} color={colors.gold} />
-          <Text style={styles.envelopeTitle}>{letter.title}</Text>
-          <Text style={styles.envelopeHint}>Tap the envelope to open</Text>
-        </Animated.View>
-      </Pressable>
-    );
-  }
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView contentContainerStyle={styles.letterScreen} showsVerticalScrollIndicator={false}>
@@ -52,41 +35,21 @@ export function LetterViewer({ letter }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  envelopeScreen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  envelopeContent: {
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.xl,
-  },
-  envelopeTitle: {
-    fontFamily: fontFamily.serifSemiBold,
-    fontSize: fontSize.xl,
-    color: colors.cream,
-    textAlign: 'center',
-  },
-  envelopeHint: {
-    fontFamily: fontFamily.sansRegular,
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-  },
-  letterScreen: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.xxxl,
-  },
-  paper: {
-    gap: spacing.md,
-  },
-  line: {
-    fontFamily: fontFamily.banglaRegular,
-    fontSize: fontSize.lg,
-    lineHeight: fontSize.lg * 1.7,
-    color: colors.cream,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    letterScreen: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      paddingHorizontal: spacing.xl,
+      paddingVertical: spacing.xxxl,
+    },
+    paper: {
+      gap: spacing.md,
+    },
+    line: {
+      fontFamily: fontFamily.banglaRegular,
+      fontSize: fontSize.lg,
+      lineHeight: fontSize.lg * 1.7,
+      color: colors.cream,
+    },
+  });

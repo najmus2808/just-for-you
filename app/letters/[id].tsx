@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import * as Haptics from 'expo-haptics';
@@ -7,11 +8,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LetterViewer } from '@/components/LetterViewer';
 import { PlaceholderScreen } from '@/components/PlaceholderScreen';
 import { ScreenContainer } from '@/components/ScreenContainer';
-import { colors } from '@/constants/colors';
+import type { ThemeColors } from '@/constants/themes';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
 import { useLetters } from '@/hooks/useLetters';
+import { hexToRgba } from '@/utils/color';
+import { goBack } from '@/utils/navigation';
 
 export default function LetterDetail() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const { letters } = useLetters();
@@ -26,7 +32,7 @@ export default function LetterDetail() {
       <LetterViewer letter={letter} />
       <Pressable
         style={[styles.backButton, { top: insets.top + spacing.sm }]}
-        onPress={() => router.back()}
+        onPress={() => goBack()}
         hitSlop={12}
         accessibilityRole="button"
         accessibilityLabel="Go back"
@@ -49,25 +55,26 @@ export default function LetterDetail() {
   );
 }
 
-const styles = StyleSheet.create({
-  backButton: {
-    position: 'absolute',
-    left: spacing.lg,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(11, 10, 13, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  editButton: {
-    position: 'absolute',
-    right: spacing.lg,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(11, 10, 13, 0.6)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    backButton: {
+      position: 'absolute',
+      left: spacing.lg,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: hexToRgba(colors.midnight, 0.6),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    editButton: {
+      position: 'absolute',
+      right: spacing.lg,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: hexToRgba(colors.midnight, 0.6),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });

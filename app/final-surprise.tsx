@@ -5,10 +5,12 @@ import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FinalSurprise } from '@/components/FinalSurprise';
-import { colors } from '@/constants/colors';
+import { useTheme } from '@/context/ThemeContext';
 import { spacing } from '@/constants/spacing';
+import { goBack } from '@/utils/navigation';
 
 export default function FinalSurpriseScreen() {
+  const { colors } = useTheme();
   const [playKey, setPlayKey] = useState(0);
   const insets = useSafeAreaInsets();
 
@@ -21,7 +23,7 @@ export default function FinalSurpriseScreen() {
       />
       <Pressable
         style={[styles.close, { top: insets.top + spacing.sm }]}
-        onPress={() => router.back()}
+        onPress={() => goBack()}
         hitSlop={12}
         accessibilityRole="button"
         accessibilityLabel="Close"

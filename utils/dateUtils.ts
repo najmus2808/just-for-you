@@ -81,3 +81,58 @@ export function getNextAnniversary(anniversary: Date, today: Date = new Date()):
   }
   return candidate;
 }
+
+export type ElapsedDuration = {
+  years: number;
+  months: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+};
+
+/**
+ * Calendar-accurate elapsed time between two dates — carries borrows across
+ * seconds→minutes→hours→days→months→years the same way you'd count on a
+ * calendar, not just a raw millisecond division (which would give
+ * misleading "months" for anything other than exactly-30-day months).
+ */
+export function getElapsedDuration(from: Date, to: Date): ElapsedDuration {
+  let years = to.getFullYear() - from.getFullYear();
+  let months = to.getMonth() - from.getMonth();
+  let days = to.getDate() - from.getDate();
+  let hours = to.getHours() - from.getHours();
+  let minutes = to.getMinutes() - from.getMinutes();
+  let seconds = to.getSeconds() - from.getSeconds();
+
+  if (seconds < 0) {
+    seconds += 60;
+    minutes -= 1;
+  }
+  if (minutes < 0) {
+    minutes += 60;
+    hours -= 1;
+  }
+  if (hours < 0) {
+    hours += 24;
+    days -= 1;
+  }
+  if (days < 0) {
+    const daysInPrevMonth = new Date(to.getFullYear(), to.getMonth(), 0).getDate();
+    days += daysInPrevMonth;
+    months -= 1;
+  }
+  if (months < 0) {
+    months += 12;
+    years -= 1;
+  }
+
+  return {
+    years: Math.max(years, 0),
+    months: Math.max(months, 0),
+    days: Math.max(days, 0),
+    hours: Math.max(hours, 0),
+    minutes: Math.max(minutes, 0),
+    seconds: Math.max(seconds, 0),
+  };
+}
